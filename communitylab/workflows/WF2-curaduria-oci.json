@@ -1,0 +1,487 @@
+{
+  "name": "CommunityLab - WF2 Curaduría → OCI",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 15
+            }
+          ]
+        }
+      },
+      "id": "f0a3ddab-1729-4a1a-9774-156655d5365b",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [-1200, 224]
+    },
+    {
+      "parameters": {},
+      "id": "9f735265-fb0c-4740-9530-f7bd5ed5902e",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [-1200, 400]
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "COLOCA_AQUI_EL_ID_DE_TU_GOOGLE_SHEET",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Curaduria",
+          "mode": "name"
+        },
+        "options": {}
+      },
+      "id": "4caf9580-1624-43ef-8c4a-de3fdcf9e81a",
+      "name": "Leer Curaduría (Sheets)",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [-960, 224],
+      "notes": "Credential: Google Sheets OAuth2 · Document ID de tu Sheet · pestaña Curaduria"
+    },
+    {
+      "parameters": {
+        "jsCode": "const all = $input.all();\n\n// Asigna row_number ANTES de filtrar (fila 1 = headers → datos desde fila 2)\nconst rows = all.map((item, idx) => {\n  const r = item.json || {};\n  const rowNumber = r.row_number ?? r.rowNumber ?? r.__rowNum__ ?? (idx + 2);\n  return {\n    ...r,\n    row_number: Number(rowNumber),\n    _skip: false\n  };\n});\n\nconst pendientes = rows.filter(r => {\n  const decision = String(r.decision || \"\").toLowerCase().trim();\n  const proceso = String(r.estado_proceso || \"\").toLowerCase().trim();\n\n  if (!decision) return false;\n  if (decision === \"pendiente\") return false;\n  if ([\"almacenado_oci\", \"cerrado_rechazado\"].includes(proceso)) return false;\n\n  return true;\n});\n\nif (pendientes.length === 0) {\n  return [{ json: { _skip: true, mensaje: \"Sin decisiones nuevas\" } }];\n}\n\nreturn pendientes.map(r => ({ json: r }));"
+      },
+      "id": "ca74b8f1-e4b3-45f5-8c17-37e4be779792",
+      "name": "Filtrar decisiones nuevas",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [-720, 224]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "cond-skip",
+              "leftValue": "={{ $json._skip }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "false",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "a191958f-0b95-4eab-b053-08067e1cc200",
+      "name": "IF hay trabajo",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [-480, 224]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 1
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ String($json.decision).toLowerCase().trim() }}",
+                    "rightValue": "aprobado",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "c8bf69f1-c78b-4247-8f3b-d5018e8d7c1b"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Aprobado"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 1
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ String($json.decision).toLowerCase().trim() }}",
+                    "rightValue": "rechazado",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "d44a7150-30f5-41be-88e7-12de26c7df8e"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Rechazado"
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "extra"
+        }
+      },
+      "id": "03ab525e-266c-41a6-ae46-6d9ddb13d3ec",
+      "name": "Switch - Decisión humana",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3,
+      "position": [-240, 128]
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// ============================================================\n// COLOCA_AQUI_TU_URL_PAR_QUE_TERMINE_EN_/o/\n// Ejemplo: https://objectstorage.REGION.oraclecloud.com/p/.../n/.../b/BUCKET/o/\n// Dry-run (sin OCI): dejá PAR_BASE = \"\"\n// ============================================================\nconst PAR_BASE = \"\";\n\nconst item = $input.item.json;\nconst assetId = item.asset_id || \"asset-unknown\";\nconst executionId = item.execution_id || \"exec-unknown\";\nconst rutaObjeto = `activos/aprobados/${executionId}/${assetId}.json`;\n\nlet urlPar = \"\";\nif (PAR_BASE) {\n  const base = PAR_BASE.endsWith(\"/\") ? PAR_BASE : PAR_BASE + \"/\";\n  urlPar = `${base}${rutaObjeto}`;\n}\n\nconst paquete = {\n  execution_id: executionId,\n  asset_id: assetId,\n  interaction_id: item.interaction_id,\n  tipo_activo: item.tipo_activo,\n  autor: item.autor,\n  score_final: item.score_final,\n  contenido: item.contenido,\n  contenido_json: item.contenido_json,\n  decision: item.decision,\n  user: item.user,\n  decision_at: item.decision_at,\n  comentario: item.comentario,\n  almacenado_at: new Date().toISOString()\n};\n\nreturn {\n  json: {\n    ...item,\n    row_number: item.row_number,\n    paquete_oci: paquete,\n    ruta_objeto: rutaObjeto,\n    url_par: urlPar\n  }\n};"
+      },
+      "id": "626b90ee-0043-4091-8aa0-7c0eb7ebcf45",
+      "name": "Preparar Paquete OCI",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [0, 0],
+      "notes": "PAR_BASE = URL Pre-Authenticated Request de OCI (termina en /o/). Vacío = dry-run."
+    },
+    {
+      "parameters": {
+        "method": "PUT",
+        "url": "={{ $json.url_par }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json.paquete_oci }}",
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true
+            }
+          }
+        }
+      },
+      "id": "10216dea-b3d4-453a-8d67-a1a65b840db6",
+      "name": "PUT a OCI (Object Storage)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [240, 0],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000,
+      "onError": "continueRegularOutput",
+      "notes": "Activo solo si PAR_BASE tiene URL válida. Full Response debe estar ON."
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const prev = $('Preparar Paquete OCI').item.json;\nconst resp = $input.item.json;\n\nconst putFallo = Boolean(resp.error);\nconst putDesactivado =\n  resp.paquete_oci !== undefined || resp.url_par !== undefined;\n\nconst statusCode =\n  resp.statusCode ??\n  (resp.response?.statusCode !== undefined ? resp.response.statusCode : undefined);\n\nlet estadoProceso;\nlet errorOci = \"\";\n\nif (putFallo) {\n  estadoProceso = \"error_oci\";\n  errorOci = String(resp.error).slice(0, 200);\n} else if (putDesactivado) {\n  estadoProceso = \"put_desactivado_dry_run\";\n  errorOci = \"PUT desactivado o sin PAR: no se confirmó carga a OCI.\";\n} else if (statusCode === undefined) {\n  estadoProceso = \"respuesta_oci_no_verificada\";\n  errorOci = \"Sin statusCode: verificar Full Response en el nodo PUT.\";\n} else if ([200, 201].includes(Number(statusCode))) {\n  estadoProceso = \"almacenado_oci\";\n} else {\n  estadoProceso = \"error_oci\";\n  errorOci = `HTTP ${statusCode} inesperado del PUT a OCI.`;\n}\n\nreturn {\n  json: {\n    row_number: prev.row_number,\n    asset_id: prev.asset_id,\n    execution_id: prev.execution_id,\n    decision: prev.decision,\n    estado_proceso: estadoProceso,\n    estado: \"aprobado\",\n    ruta_objeto: prev.ruta_objeto || \"\",\n    oci_ok: estadoProceso === \"almacenado_oci\",\n    error_oci: errorOci\n  }\n};"
+      },
+      "id": "54b8f486-55da-4e2d-9519-8865721767f4",
+      "name": "Marcar almacenado_oci",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [480, 0]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "COLOCA_AQUI_EL_ID_DE_TU_GOOGLE_SHEET",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Curaduria",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "row_number": "={{ $json.row_number }}",
+            "estado_proceso": "={{ $json.estado_proceso }}",
+            "estado": "={{ $json.estado }}",
+            "error_oci": "={{ $json.error_oci }}"
+          },
+          "matchingColumns": ["row_number"],
+          "schema": [
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "estado_proceso",
+              "displayName": "estado_proceso",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "estado",
+              "displayName": "estado",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "error_oci",
+              "displayName": "error_oci",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "9679c493-85b0-43c8-95ca-841b64f6f30c",
+      "name": "Actualizar Sheet (aprobado)",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [720, 0],
+      "notes": "Credential: Google Sheets OAuth2"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const item = $input.item.json;\nreturn {\n  json: {\n    row_number: item.row_number,\n    asset_id: item.asset_id,\n    execution_id: item.execution_id,\n    decision: \"rechazado\",\n    estado_proceso: \"cerrado_rechazado\",\n    estado: \"rechazado\"\n  }\n};"
+      },
+      "id": "a1dd4dbc-e370-40d5-af4e-5d09ce61aa9d",
+      "name": "Marcar cerrado_rechazado",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [0, 240]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "COLOCA_AQUI_EL_ID_DE_TU_GOOGLE_SHEET",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Curaduria",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "row_number": "={{ $json.row_number }}",
+            "estado_proceso": "cerrado_rechazado",
+            "estado": "rechazado"
+          },
+          "matchingColumns": ["row_number"],
+          "schema": [
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "estado_proceso",
+              "displayName": "estado_proceso",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "estado",
+              "displayName": "estado",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "65a705b1-9e8f-43e1-abba-63a446ad937d",
+      "name": "Actualizar Sheet (rechazado)",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [240, 240],
+      "notes": "Credential: Google Sheets OAuth2"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const item = $input.item.json;\nreturn {\n  json: {\n    row_number: item.row_number,\n    asset_id: item.asset_id || \"\",\n    execution_id: item.execution_id || \"\",\n    decision: item.decision || \"\",\n    estado_proceso: \"decision_invalida\",\n    estado: \"pendiente_curaduria\",\n    comentario: `Valor de decision no reconocido: \"${item.decision}\". Usa \"aprobado\" o \"rechazado\".`\n  }\n};"
+      },
+      "id": "a5f7e5b9-501f-4b06-9f1a-691abde9b071",
+      "name": "Marcar decisión inválida",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [0, 480]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "COLOCA_AQUI_EL_ID_DE_TU_GOOGLE_SHEET",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Curaduria",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "row_number": "={{ $json.row_number }}",
+            "estado_proceso": "={{ $json.estado_proceso }}",
+            "estado": "={{ $json.estado }}",
+            "comentario": "={{ $json.comentario }}"
+          },
+          "matchingColumns": ["row_number"],
+          "schema": [
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "estado_proceso",
+              "displayName": "estado_proceso",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "estado",
+              "displayName": "estado",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "comentario",
+              "displayName": "comentario",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "7baf5041-5c6f-4eaa-bcd5-711fea1256c6",
+      "name": "Actualizar Sheet (decisión inválida)",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [240, 480],
+      "notes": "Credential: Google Sheets OAuth2"
+    }
+  ],
+  "connections": {
+    "Schedule Trigger": {
+      "main": [[{ "node": "Leer Curaduría (Sheets)", "type": "main", "index": 0 }]]
+    },
+    "Manual Trigger": {
+      "main": [[{ "node": "Leer Curaduría (Sheets)", "type": "main", "index": 0 }]]
+    },
+    "Leer Curaduría (Sheets)": {
+      "main": [[{ "node": "Filtrar decisiones nuevas", "type": "main", "index": 0 }]]
+    },
+    "Filtrar decisiones nuevas": {
+      "main": [[{ "node": "IF hay trabajo", "type": "main", "index": 0 }]]
+    },
+    "IF hay trabajo": {
+      "main": [[{ "node": "Switch - Decisión humana", "type": "main", "index": 0 }]]
+    },
+    "Switch - Decisión humana": {
+      "main": [
+        [{ "node": "Preparar Paquete OCI", "type": "main", "index": 0 }],
+        [{ "node": "Marcar cerrado_rechazado", "type": "main", "index": 0 }],
+        [{ "node": "Marcar decisión inválida", "type": "main", "index": 0 }]
+      ]
+    },
+    "Preparar Paquete OCI": {
+      "main": [[{ "node": "PUT a OCI (Object Storage)", "type": "main", "index": 0 }]]
+    },
+    "PUT a OCI (Object Storage)": {
+      "main": [[{ "node": "Marcar almacenado_oci", "type": "main", "index": 0 }]]
+    },
+    "Marcar almacenado_oci": {
+      "main": [[{ "node": "Actualizar Sheet (aprobado)", "type": "main", "index": 0 }]]
+    },
+    "Marcar cerrado_rechazado": {
+      "main": [[{ "node": "Actualizar Sheet (rechazado)", "type": "main", "index": 0 }]]
+    },
+    "Marcar decisión inválida": {
+      "main": [[{ "node": "Actualizar Sheet (decisión inválida)", "type": "main", "index": 0 }]]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": false
+  }
+}
