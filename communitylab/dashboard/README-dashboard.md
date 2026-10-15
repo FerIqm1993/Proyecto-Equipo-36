@@ -74,7 +74,13 @@ pip install -r requirements.txt
 ```
 
 ### 4. Configurar Credenciales y Secrets
-Crea el archivo `.streamlit/secrets.toml` dentro de la carpeta `communitylab/dashboard/` (o en tu directorio de usuario `~/.streamlit/secrets.toml`):
+Puedes copiar la plantilla incluida [secrets.toml.example](.streamlit/secrets.toml.example) hacia `.streamlit/secrets.toml`:
+
+```bash
+cp .streamlit/secrets.toml.example .streamlit/secrets.toml
+```
+
+Edita `.streamlit/secrets.toml` con tus credenciales reales:
 
 ```toml
 [gcp_service_account]
@@ -95,6 +101,8 @@ worksheet_name = "Curaduria"
 > ⚠️ **IMPORTANTE:** Comparte tu Google Sheet con el correo `client_email` de tu Service Account otorgándole permisos de **Editor**.
 
 ### 5. Estructura de Columnas en Google Sheets (Hoja: `Curaduria`)
+> 💡 **Tip:** Puedes importar directamente el archivo [`plantilla_curaduria.csv`](plantilla_curaduria.csv) en tu Google Sheet para tener los encabezados y datos de prueba listos en 5 segundos.
+
 La primera fila (encabezados) debe contener las siguientes columnas (el orden no afecta gracias al mapeo por nombre):
 - `execution_id`
 - `interaction_id`

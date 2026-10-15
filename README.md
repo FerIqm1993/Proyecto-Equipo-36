@@ -45,15 +45,21 @@ El código fuente, flujos automatizados y documentación detallada se encuentran
 communitylab/
 ├── README.md                                 # Documentación técnica completa y arquitectura
 ├── .gitignore                                # Exclusiones de Git
+├── .env.example                              # Plantilla de variables de entorno
 ├── workflows/                                # Workflows exportados de n8n
 │   ├── WF1-ingesta-analisis-generacion.json  # Ingesta, análisis semántico con LLM y generación
 │   ├── WF2-curaduria-oci.json                # Curaduría hacia OCI Object Storage Always Free
-│   └── WF3-metricas-diarias.json             # Cálculo de métricas y observabilidad diaria
+│   ├── WF3-metricas-diarias.json             # Cálculo de métricas y observabilidad diaria
+│   └── sample-payload-ingesta.json           # Payload JSON de prueba para el Webhook de WF1
 ├── dashboard/                                # Aplicación de Curaduría en Streamlit
 │   ├── dashboard_curaduria.py                # Interfaz Human-in-the-Loop
 │   ├── requirements.txt                      # Dependencias Python
-│   └── README-dashboard.md                   # Manual de uso y configuración del dashboard
+│   ├── README-dashboard.md                   # Manual de uso y configuración del dashboard
+│   ├── plantilla_curaduria.csv               # Esquema de Google Sheets con filas de ejemplo
+│   └── .streamlit/
+│       └── secrets.toml.example              # Plantilla de credenciales GCP y Sheets
 └── docs/
+    ├── README.md                             # Guía de capturas y catálogo de evidencias
     └── capturas/                             # Evidencias de ejecución y capturas
 ```
 

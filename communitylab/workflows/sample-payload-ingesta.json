@@ -1,0 +1,30 @@
+{
+  "origen_comunidad": "Discord_Grupo_ONE_G10",
+  "periodo_referencia": "Semana_04",
+  "interacciones": [
+    {
+      "autor": "Mariana Souza",
+      "canal": "#logros-y-empleos",
+      "tipo": "testimonio",
+      "texto": "Después de 8 meses aplicando lo que aprendí en el programa, firmé mi primera oferta como desarrolladora junior. Gracias a toda la comunidad por el acompañamiento."
+    },
+    {
+      "autor": "Carlos Peña",
+      "canal": "#ayuda-tecnica",
+      "tipo": "pregunta_tecnica",
+      "texto": "¿Alguien tiene un ejemplo de despliegue continuo en Oracle Cloud con n8n? Encontré una guía muy buena, pero quiero ajustar bien los permisos IAM. Cualquier tip es bienvenido."
+    },
+    {
+      "autor": "Lucía Fernández",
+      "canal": "#logros-y-empleos",
+      "tipo": "logro",
+      "texto": "Mi proyecto final fue seleccionado entre los 10 mejores del hackathon regional. Lo construimos en equipo con todo lo del módulo de APIs."
+    },
+    {
+      "autor": "Andrés Ríos",
+      "canal": "#general",
+      "tipo": "otro",
+      "texto": "Hola, ¿qué día es la próxima reunión? No encuentro el calendario."
+    }
+  ]
+}

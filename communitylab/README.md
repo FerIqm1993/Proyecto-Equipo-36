@@ -99,18 +99,24 @@ flowchart TD
 
 ```text
 communitylab/
-├── README.md                                 # Documentación principal del proyecto
+├── README.md                                 # Documentación técnica completa y arquitectura
 ├── .gitignore                                # Exclusiones de Git (entornos, secretos, caches)
+├── .env.example                              # Plantilla de variables de entorno
 ├── workflows/                                # Definiciones exportadas de n8n
 │   ├── WF1-ingesta-analisis-generacion.json  # Flujo 1: Ingesta, análisis LLM y generación
 │   ├── WF2-curaduria-oci.json                # Flujo 2: Lectura de aprobados y subida a OCI
-│   └── WF3-metricas-diarias.json             # Flujo 3: Cálculo y consolidación de métricas
+│   ├── WF3-metricas-diarias.json             # Flujo 3: Cálculo y consolidación de métricas
+│   └── sample-payload-ingesta.json           # Payload JSON de prueba para el Webhook de WF1
 ├── dashboard/                                # Aplicación de Curaduría Humana
 │   ├── dashboard_curaduria.py                # Interfaz en Streamlit (Human-in-the-Loop)
 │   ├── requirements.txt                      # Dependencias de Python
-│   └── README-dashboard.md                   # Guía de configuración y uso del dashboard
+│   ├── README-dashboard.md                   # Guía de configuración y uso del dashboard
+│   ├── plantilla_curaduria.csv               # Esquema de Google Sheets con filas de ejemplo
+│   └── .streamlit/
+│       └── secrets.toml.example              # Plantilla de secretos para GCP y Sheets
 └── docs/
-    └── capturas/                             # Evidencias visuales y diagramas
+    ├── README.md                             # Guía de capturas y catálogo de evidencias
+    └── capturas/                             # Evidencias visuales y capturas
 ```
 
 ---
