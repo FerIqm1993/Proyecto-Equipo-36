@@ -1,18 +1,25 @@
-# 🌐 CommunityLab — Motor Inteligente de Transformación y Distribución para Comunidades Digitales
+# 🛡️ CommunityLab
+### Motor Inteligente de Transformación y Distribución para Comunidades Digitales
 
-> **Hackathon ONE G10 — Oracle Next Education & Alura**  
+> **Hackathon ONE G10 · Oracle Next Education & Alura · Octubre 2026**  
 > **Equipo 36**  
-> **Formaciones:** Orquestación con IA Generativa, Agentes Autónomos, Automatización de Flujos y Oracle Cloud Infrastructure (OCI).
+> *"La IA propone · El humano decide · OCI guarda solo lo aprobado."*
 
 ---
 
-## 📌 Resumen Ejecutivo y Propuesta de Valor
+## 📌 ¿Qué es CommunityLab?
+
+**CommunityLab** transforma la actividad orgánica de una comunidad digital (testimonios, dudas, logros dispersos en canales como Discord) en activos de marketing listos para distribución — de forma automatizada, con curación humana obligatoria y persistencia en la nube de Oracle.
+
+---
+
+## 🎯 Justificación y Propuesta de Valor
 
 ### El Problema
 Las comunidades de aprendizaje tecnológico, plataformas SaaS y ecosistemas de desarrolladores (como Discord, Slack, foros y GitHub) generan diariamente decenas de interacciones orgánicas de alto valor: testimonios de empleo, dudas técnicas recurrentes, proyectos destacados y feedback constructivo. Sin embargo, **más del 90% de este valor se desaprovecha** debido a que la recolección, selección, curaduría y adaptación a formatos de marketing requiere horas de trabajo manual de los equipos de Community Management.
 
-### La Solución: CommunityLab
-**CommunityLab** es una plataforma integral orientada a eventos que:
+### La Solución
+**CommunityLab** implementa una arquitectura orientada a eventos con IA Generativa y orquestación que:
 1. **Ingiere y normaliza** interacciones comunitarias en tiempo real y por lotes.
 2. **Evalúa semánticamente** los mensajes con modelos LLM ultrarrápidos (Groq Llama 3) y aplica un algoritmo de scoring determinístico ponderado.
 3. **Bifurca y genera automáticamente** 3 formatos especializados de contenido:
