@@ -1,4 +1,4 @@
-1**
+/**
  * CommunityLab — Interactive Dashboard & Portal Logic
  * Hackathon ONE G10 · Oracle Next Education & Alura · Equipo 36
  */
