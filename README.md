@@ -67,10 +67,12 @@ communitylab/
 
 ## ⚡ Enlaces Rápidos
 
+- 🌐 **[Despliegue Web Oficial en Vivo (Netlify)](https://proyecto-equipo-36.netlify.app/)**
 - 📖 **[Documentación Técnica Completa](communitylab/README.md)** (Arquitectura Mermaid, Contratos de Datos y Matriz de Cumplimiento)
 - 🤖 **[Workflows de n8n](communitylab/workflows/)**
-- 🖥️ **[Dashboard de Curaduría Streamlit](communitylab/dashboard/)**
+- 🖥️ **[Dashboard de Curaduría Streamlit](communitylab/dashboard/)** / [`app.py`](app.py)
 - 🛡️ **[Manual del Dashboard](communitylab/dashboard/README-dashboard.md)**
 
 ---
 *Desarrollado con dedicación por el **Equipo 36** — Hackathon ONE G10 (Oracle & Alura).*
+

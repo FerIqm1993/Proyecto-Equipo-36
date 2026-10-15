@@ -249,5 +249,7 @@ streamlit run dashboard_curaduria.py
 
 ## 👥 Equipo 36
 - **Proyecto:** CommunityLab
+- **Despliegue Web en Vivo:** [https://proyecto-equipo-36.netlify.app/](https://proyecto-equipo-36.netlify.app/)
 - **Repositorio Oficial:** [GitHub - Proyecto-Equipo-36](https://github.com/FerIqm1993/Proyecto-Equipo-36.git)
 - **Hackathon:** Oracle Next Education & Alura — Edición G10
+

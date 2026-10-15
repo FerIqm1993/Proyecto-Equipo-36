@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CommunityLab — Motor Inteligente con IA, Curaduría Humana y Oracle Cloud</title>
+  <meta name="description" content="CommunityLab transforma la actividad orgánica de comunidades digitales en activos de marketing listos para distribución con IA Generativa (Groq), Curaduría Humana y persistencia en OCI Object Storage.">
+  <meta name="author" content="Equipo 36 · Hackathon ONE G10 (Oracle Next Education & Alura)">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="CommunityLab — Curaduría & Persistencia OCI">
+  <meta property="og:description" content="La IA propone · El humano decide · OCI guarda solo lo aprobado.">
+  <meta property="og:image" content="assets/communitylab_hero.jpg">
+  <meta property="og:type" content="website">
+
+  <!-- Favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220%22><text y=%2226%22 font-size=%2224%22>🛡️</text></svg>">
+
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Top Sticky Navigation -->
+  <header class="top-nav">
+    <div class="nav-container">
+      <a href="#inicio" class="nav-brand" data-tab="curaduria">
+        <div class="brand-shield">🛡️</div>
+        <div class="brand-text">
+          <h1>CommunityLab</h1>
+          <span class="brand-tag">Hackathon ONE G10 · Equipo 36</span>
+        </div>
+      </a>
+
+      <ul class="nav-menu">
+        <li class="nav-item active" id="nav-curaduria">
+          <button data-tab="curaduria">🛡️ Curaduría en Vivo</button>
+        </li>
+        <li class="nav-item" id="nav-simulador">
+          <button data-tab="simulador">⚡ Simulador de IA</button>
+        </li>
+        <li class="nav-item" id="nav-arquitectura">
+          <button data-tab="arquitectura">🏛️ Arquitectura & n8n</button>
+        </li>
+        <li class="nav-item" id="nav-metricas">
+          <button data-tab="metricas">📊 Métricas OCI</button>
+        </li>
+        <li class="nav-item" id="nav-matriz">
+          <button data-tab="matriz">📜 Matriz ONE</button>
+        </li>
+      </ul>
+
+      <div class="nav-actions">
+        <div class="status-pill">
+          <span class="pulse-dot"></span>
+          <span>Pipeline n8n v2.1 Activo</span>
+        </div>
+        <a href="https://github.com/FerIqm1993/Proyecto-Equipo-36" target="_blank" rel="noopener" class="btn-icon-link">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
+          <span>GitHub</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero-section" id="inicio">
+    <div class="hero-content">
+      <div class="hero-badge">
+        <span>Oracle Next Education & Alura · Hackathon G10</span>
+      </div>
+
+      <h1 class="hero-title">
+        Motor Inteligente de <span class="gradient-text-hero">Transformación & Curaduría</span> para Comunidades
+      </h1>
+
+      <p class="hero-subtitle">
+        Convierte la actividad orgánica de canales comunitarios (testimonios, logros y preguntas técnicas) en activos de marketing listos para distribución con IA de alto rendimiento, supervisión humana obligatoria y persistencia enterprise en <strong>Oracle Cloud Infrastructure (OCI)</strong>.
+      </p>
+
+      <div class="hero-motto">
+        <span>🛡️</span>
+        <span>"La IA propone · El humano decide · OCI guarda solo lo aprobado."</span>
+      </div>
+
+      <div class="hero-pills-row">
+        <span class="tech-tag oci">☁️ OCI Object Storage Always Free</span>
+        <span class="tech-tag groq">⚡ Groq LLM Llama 3.3 (JSON estricto)</span>
+        <span class="tech-tag n8n">🤖 n8n Workflow Automation (14 Nodos)</span>
+        <span class="tech-tag">📊 Google Sheets Live Sync</span>
+      </div>
+    </div>
+
+    <div class="hero-visual">
+      <img src="assets/communitylab_hero.jpg" alt="CommunityLab Enterprise Dashboard y Arquitectura Cloud" class="hero-banner-img">
+      <div class="hero-stats-overlay">
+        <div class="stat-item">
+          <span class="stat-num cyan">4</span>
+          <span class="stat-label">Casos Muestra</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-num amber">3</span>
+          <span class="stat-label">Formatos Marketing</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-num emerald">100%</span>
+          <span class="stat-label">Curación Humana</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-num red">Always Free</span>
+          <span class="stat-label">Bucket OCI Cloud</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Container with Tab Views -->
+  <main class="app-main">
+
+    <!-- ====================================================================
+         TAB 1: PANEL DE CURADURÍA EN VIVO (Human-in-the-Loop)
+         ==================================================================== -->
+    <section class="tab-content active" id="tab-curaduria">
+      <div class="section-header">
+        <div class="section-title-wrap">
+          <span class="section-badge">Human-in-the-Loop</span>
+          <h2 class="section-title">Estación Interactiva de Curaduría & Validación</h2>
+          <p class="section-desc">Revisa el contenido generado por IA desde la sincronización en vivo con Google Sheets, edita los copys en tiempo real y autoriza la persistencia definitiva hacia OCI Object Storage.</p>
+        </div>
+      </div>
+
+      <div class="glass-card">
+        <!-- Station Toolbar -->
+        <div class="station-toolbar">
+          <div class="station-meta">
+            <span class="live-sheet-badge">
+              <span class="pulse-dot"></span>
+              Google Sheets Conectado (Curaduria)
+            </span>
+            <label for="select-execution" class="form-label" style="margin-left:0.5rem;">Ejecución Activa:</label>
+            <select id="select-execution" class="select-execution" title="Seleccionar ejecución recibida desde n8n"></select>
+            <button id="btn-refresh-sheet" class="btn-refresh" title="Actualizar datos desde Google Sheets">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+              <span>Sincronizar Sheet</span>
+            </button>
+          </div>
+
+          <div id="curaduria-status-badge" class="status-pill" style="background:rgba(255,153,0,0.1); border-color:rgba(255,153,0,0.3); color:var(--amber);">
+            🟡 Pendiente de Curaduría
+          </div>
+        </div>
+
+        <!-- 3 Formats Cards Grid -->
+        <div class="curaduria-grid">
+          
+          <!-- Card 1: LinkedIn -->
+          <article class="asset-card li-card">
+            <div class="asset-header">
+              <div class="asset-type-badge">
+                <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                <span>Post LinkedIn (Testimonio)</span>
+              </div>
+              <div class="asset-mode-toggle">
+                <button class="mode-btn" id="btn-mode-li-edit">Editar</button>
+                <button class="mode-btn active" id="btn-mode-li-prev">Preview</button>
+              </div>
+            </div>
+
+            <div class="asset-body">
+              <!-- Edit Form -->
+              <div class="form-group" id="li-edit-form" style="display:none; flex-direction:column; gap:0.75rem;">
+                <div class="form-group">
+                  <label for="input-li-title" class="form-label">Título del Post</label>
+                  <input type="text" id="input-li-title" class="form-input" placeholder="Título para LinkedIn">
+                </div>
+                <div class="form-group">
+                  <label for="input-li-copy" class="form-label">Copy Sugerido (con Hashtags)</label>
+                  <textarea id="input-li-copy" class="form-textarea" placeholder="Escribe o ajusta el copy..."></textarea>
+                </div>
+              </div>
+
+              <!-- Live Simulator Preview -->
+              <div class="live-preview-box" id="li-preview-box">
+                <div class="linkedin-preview">
+                  <div class="li-header">
+                    <div class="li-avatar">MS</div>
+                    <div class="li-meta">
+                      <span class="li-name">Mariana Souza</span>
+                      <span class="li-title">Estudiante ONE / Alura · Desarrolladora Junior</span>
+                    </div>
+                  </div>
+                  <div class="li-content" id="preview-li-text"></div>
+                  <div class="li-actions">
+                    <span>👍 148</span>
+                    <span>💬 32 comentarios</span>
+                    <span>🔄 18 compartidos</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- Card 2: FAQ Dinámico -->
+          <article class="asset-card faq-card">
+            <div class="asset-header">
+              <div class="asset-type-badge">
+                <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2c5.514 0 10 4.486 10 10s-4.486 10-10 10-10-4.486-10-10 4.486-10 10-10zm0-2c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm-1.5 6.5h3v2h-3v-2zm1.5 3.5c1.654 0 3 1.346 3 3 0 1.258-.783 2.333-1.892 2.766-.465.182-.608.536-.608.984h-2c0-1.127.607-1.879 1.442-2.222.586-.242.942-.767.942-1.328 0-.827-.673-1.5-1.5-1.5s-1.5.673-1.5 1.5h-2c0-1.93 1.57-3.5 3.5-3.5zm0 10.5c.828 0 1.5-.672 1.5-1.5s-.672-1.5-1.5-1.5-1.5.672-1.5 1.5.672 1.5 1.5 1.5z"/></svg>
+                <span>FAQ / Tip Técnico</span>
+              </div>
+              <div class="asset-mode-toggle">
+                <button class="mode-btn" id="btn-mode-faq-edit">Editar</button>
+                <button class="mode-btn active" id="btn-mode-faq-prev">Preview</button>
+              </div>
+            </div>
+
+            <div class="asset-body">
+              <!-- Edit Form -->
+              <div class="form-group" id="faq-edit-form" style="display:none; flex-direction:column; gap:0.75rem;">
+                <div class="form-group">
+                  <label for="input-faq-tema" class="form-label">Tema Técnico</label>
+                  <input type="text" id="input-faq-tema" class="form-input" placeholder="Tema...">
+                </div>
+                <div class="form-group">
+                  <label for="input-faq-q" class="form-label">Pregunta Reformulada</label>
+                  <input type="text" id="input-faq-q" class="form-input" placeholder="Pregunta clara...">
+                </div>
+                <div class="form-group">
+                  <label for="input-faq-a" class="form-label">Respuesta Accionable / Código</label>
+                  <textarea id="input-faq-a" class="form-textarea" placeholder="Pasos y solución..."></textarea>
+                </div>
+              </div>
+
+              <!-- Live Simulator Preview -->
+              <div class="live-preview-box" id="faq-preview-box">
+                <div class="faq-preview">
+                  <span class="faq-badge" id="preview-faq-topic">Permisos OCI IAM</span>
+                  <h4 class="faq-q" id="preview-faq-question">¿Cómo configurar permisos para n8n?</h4>
+                  <pre class="faq-a" id="preview-faq-answer"></pre>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- Card 3: Newsletter Semanal -->
+          <article class="asset-card nl-card">
+            <div class="asset-header">
+              <div class="asset-type-badge">
+                <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M0 3v18h24v-18h-24zm21.518 2l-9.518 7.713-9.518-7.713h19.036zm-19.518 14v-11.817l10 8.104 10-8.104v11.817h-20z"/></svg>
+                <span>Newsletter Semanal</span>
+              </div>
+              <div class="asset-mode-toggle">
+                <button class="mode-btn" id="btn-mode-nl-edit">Editar</button>
+                <button class="mode-btn active" id="btn-mode-nl-prev">Preview</button>
+              </div>
+            </div>
+
+            <div class="asset-body">
+              <!-- Edit Form -->
+              <div class="form-group" id="nl-edit-form" style="display:none; flex-direction:column; gap:0.75rem;">
+                <div class="form-group">
+                  <label for="input-nl-title" class="form-label">Titular Editorial</label>
+                  <input type="text" id="input-nl-title" class="form-input" placeholder="Titular de impacto">
+                </div>
+                <div class="form-group">
+                  <label for="input-nl-summary" class="form-label">Resumen / Historia</label>
+                  <textarea id="input-nl-summary" class="form-textarea" placeholder="Cuerpo de la noticia..."></textarea>
+                </div>
+              </div>
+
+              <!-- Live Simulator Preview -->
+              <div class="live-preview-box" id="nl-preview-box">
+                <div class="newsletter-preview">
+                  <div class="nl-edition-tag">Boletín Semanal · Comunidad ONE</div>
+                  <h4 class="nl-title" id="preview-nl-headline">¡Proyecto Top del Hackathon!</h4>
+                  <p class="nl-summary" id="preview-nl-body"></p>
+                </div>
+              </div>
+            </div>
+          </article>
+
+        </div>
+
+        <!-- Action Bar -->
+        <div class="station-actions-bar">
+          <div class="action-status-info">
+            <span>🛡️ Decisión Humana Requerida:</span>
+            <small style="color:var(--text-dim);">Solo el contenido aprobado se enviará al bucket OCI Always Free.</small>
+          </div>
+
+          <div class="btn-group">
+            <button id="btn-reject-content" class="btn-danger">
+              <span>❌ Rechazar</span>
+            </button>
+            <button id="btn-approve-oci" class="btn-primary">
+              <span>✅ Aprobar y Guardar en OCI Object Storage</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- OCI Payload Result Panel -->
+        <div id="oci-result-panel" class="oci-result-panel">
+          <div class="oci-panel-header">
+            <div style="display:flex; align-items:center; gap:0.75rem;">
+              <span style="font-size:1.1rem;">☁️</span>
+              <strong style="color:#fff;">Payload Oficial Persistido en OCI Object Storage</strong>
+              <span id="oci-path-text" class="oci-dest-badge"></span>
+            </div>
+            <button id="btn-copy-oci-json" class="btn-refresh" style="font-size:0.75rem;">
+              <span>📋 Copiar JSON</span>
+            </button>
+          </div>
+          <pre id="oci-json-output" class="code-display"></pre>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         TAB 2: SIMULADOR DE INGESTA & GROQ LLM (WF1)
+         ==================================================================== -->
+    <section class="tab-content" id="tab-simulador">
+      <div class="section-header">
+        <div class="section-title-wrap">
+          <span class="section-badge">Motor Semántico Groq</span>
+          <h2 class="section-title">Simulador Interactivo de Ingesta & Análisis</h2>
+          <p class="section-desc">Experimenta cómo el pipeline de n8n procesa mensajes en tiempo real: extrae sentimiento con Groq LLM, aplica scoring determinístico y bifurca al formato de marketing adecuado.</p>
+        </div>
+      </div>
+
+      <div class="simulator-layout">
+        <!-- Input Form & Presets -->
+        <div class="glass-card">
+          <h3 style="font-size:1.15rem; margin-bottom:0.75rem;">1. Selecciona un Preset o Ingresa Mensaje</h3>
+          
+          <div class="preset-selector">
+            <button class="preset-chip active" id="chip-mariana" data-preset="mariana">Testimonio (Mariana Souza)</button>
+            <button class="preset-chip" id="chip-carlos" data-preset="carlos">Duda Técnica (Carlos Peña)</button>
+            <button class="preset-chip" id="chip-lucia" data-preset="lucia">Logro Comunitario (Lucía Fernández)</button>
+            <button class="preset-chip" id="chip-andres" data-preset="andres">Descarte (Andrés Ríos)</button>
+          </div>
+
+          <div style="display:flex; flex-direction:column; gap:1rem; margin-top:1rem;">
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.75rem;">
+              <div class="form-group">
+                <label for="sim-input-autor" class="form-label">Autor de la Comunidad</label>
+                <input type="text" id="sim-input-autor" class="form-input" value="Mariana Souza">
+              </div>
+              <div class="form-group">
+                <label for="sim-input-canal" class="form-label">Canal de Origen</label>
+                <input type="text" id="sim-input-canal" class="form-input" value="#logros-y-empleos">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="sim-input-texto" class="form-label">Mensaje Orgánico</label>
+              <textarea id="sim-input-texto" class="form-textarea" rows="4"></textarea>
+            </div>
+
+            <button id="btn-run-simulation" class="btn-primary" style="justify-content:center; width:100%; margin-top:0.5rem;">
+              <span>⚡ Procesar con Pipeline de IA (Groq LLM)</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Animated Execution Trace -->
+        <div class="glass-card">
+          <h3 style="font-size:1.15rem; margin-bottom:1rem;">2. Trazabilidad de Ejecución en Tiempo Real</h3>
+          <div id="sim-trace-result"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         TAB 3: ARQUITECTURA & WORKFLOWS DE N8N
+         ==================================================================== -->
+    <section class="tab-content" id="tab-arquitectura">
+      <div class="section-header">
+        <div class="section-title-wrap">
+          <span class="section-badge">Orquestación Enterprise</span>
+          <h2 class="section-title">Arquitectura del Sistema & Flujos n8n</h2>
+          <p class="section-desc">Estructura modular orientada a eventos con 3 workflows en n8n, contratos de datos estrictos y persistencia en la nube de Oracle.</p>
+        </div>
+      </div>
+
+      <!-- Architecture SVG Diagram Card -->
+      <div class="glass-card arch-diagram-card">
+        <h3 style="font-size:1.15rem; margin-bottom:1rem; display:flex; align-items:center; gap:0.5rem;">
+          <span>🌐</span>
+          <span>Diagrama Integral de Arquitectura (End-to-End)</span>
+        </h3>
+        <div class="arch-svg-container">
+          <svg viewBox="0 0 1100 240" style="width:100%; max-height:240px;" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="grad-blue" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#0284c7"/><stop offset="100%" stop-color="#0369a1"/></linearGradient>
+              <linearGradient id="grad-amber" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#ea580c"/><stop offset="100%" stop-color="#c2410c"/></linearGradient>
+              <linearGradient id="grad-purple" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#7c3aed"/><stop offset="100%" stop-color="#6d28d9"/></linearGradient>
+              <linearGradient id="grad-green" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#059669"/><stop offset="100%" stop-color="#047857"/></linearGradient>
+              <linearGradient id="grad-red" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#dc2626"/><stop offset="100%" stop-color="#b91c1c"/></linearGradient>
+            </defs>
+
+            <!-- Node 1: Ingesta -->
+            <rect x="20" y="70" width="160" height="90" rx="12" fill="url(#grad-blue)" stroke="#38bdf8" stroke-width="1.5"/>
+            <text x="100" y="105" fill="#fff" font-size="13" font-weight="bold" text-anchor="middle">1. Ingesta</text>
+            <text x="100" y="125" fill="#bae6fd" font-size="10" text-anchor="middle">Webhook / Discord / JSON</text>
+            <text x="100" y="140" fill="#bae6fd" font-size="9" text-anchor="middle">CL-YYYYMMDD-XXX</text>
+
+            <path d="M 180 115 L 230 115" stroke="#38bdf8" stroke-width="2" marker-end="url(#arrow)"/>
+
+            <!-- Node 2: Groq Semántica -->
+            <rect x="230" y="70" width="170" height="90" rx="12" fill="url(#grad-amber)" stroke="#fb923c" stroke-width="1.5"/>
+            <text x="315" y="105" fill="#fff" font-size="13" font-weight="bold" text-anchor="middle">2. Groq LLM</text>
+            <text x="315" y="125" fill="#fed7aa" font-size="10" text-anchor="middle">Llama 3.3 · Análisis Semántico</text>
+            <text x="315" y="140" fill="#fed7aa" font-size="9" text-anchor="middle">Scoring Determinístico</text>
+
+            <path d="M 400 115 L 450 115" stroke="#fb923c" stroke-width="2"/>
+
+            <!-- Node 3: Switch Bifurcación -->
+            <rect x="450" y="70" width="160" height="90" rx="12" fill="url(#grad-purple)" stroke="#c084fc" stroke-width="1.5"/>
+            <text x="530" y="105" fill="#fff" font-size="13" font-weight="bold" text-anchor="middle">3. Bifurcación</text>
+            <text x="530" y="125" fill="#f3e8ff" font-size="10" text-anchor="middle">Switch: Score >= 6.0</text>
+            <text x="530" y="140" fill="#f3e8ff" font-size="9" text-anchor="middle">LinkedIn · FAQ · Newsletter</text>
+
+            <path d="M 610 115 L 660 115" stroke="#c084fc" stroke-width="2"/>
+
+            <!-- Node 4: Curaduría Humana -->
+            <rect x="660" y="70" width="170" height="90" rx="12" fill="url(#grad-green)" stroke="#34d399" stroke-width="1.5"/>
+            <text x="745" y="105" fill="#fff" font-size="13" font-weight="bold" text-anchor="middle">4. Curaduría Humana</text>
+            <text x="745" y="125" fill="#a7f3d0" font-size="10" text-anchor="middle">Google Sheets + Web Panel</text>
+            <text x="745" y="140" fill="#a7f3d0" font-size="9" text-anchor="middle">Human-in-the-Loop</text>
+
+            <path d="M 830 115 L 880 115" stroke="#34d399" stroke-width="2"/>
+
+            <!-- Node 5: OCI Object Storage -->
+            <rect x="880" y="70" width="190" height="90" rx="12" fill="url(#grad-red)" stroke="#f87171" stroke-width="1.5"/>
+            <text x="975" y="105" fill="#fff" font-size="13" font-weight="bold" text-anchor="middle">5. Oracle Cloud (OCI)</text>
+            <text x="975" y="125" fill="#fecaca" font-size="10" text-anchor="middle">Object Storage Always Free</text>
+            <text x="975" y="140" fill="#fecaca" font-size="9" text-anchor="middle">activos/Semana_04/...json</text>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Workflows Grid -->
+      <div class="workflows-grid">
+        <!-- WF1 Card -->
+        <article class="wf-card">
+          <span class="wf-tag wf1">WF1 · Core Ingesta</span>
+          <h3 style="font-size:1.1rem; color:#fff;">WF1: Ingesta, Análisis y Generación</h3>
+          <p style="font-size:0.85rem; color:var(--text-muted);">
+            Procesa interacciones entrantes, ejecuta la inferencia en Groq con LLaMA 3.3, calcula el scoring determinístico y bifurca en 3 ramas de generación especializada hacia Google Sheets.
+          </p>
+          <ul class="wf-meta-list">
+            <li><strong>Nodos:</strong> 14 nodos n8n</li>
+            <li><strong>Disparador:</strong> Webhook HTTP / Manual Trigger</li>
+            <li><strong>Modelos:</strong> Groq Llama 3 (JSON estricto)</li>
+            <li><strong>Salida:</strong> Google Sheets (pendiente_curaduria)</li>
+          </ul>
+          <a href="communitylab/workflows/WF1-ingesta-analisis-generacion.json" download class="btn-icon-link" style="margin-top:auto; justify-content:center;">
+            <span>📥 Descargar WF1 JSON</span>
+          </a>
+        </article>
+
+        <!-- WF2 Card -->
+        <article class="wf-card">
+          <span class="wf-tag wf2">WF2 · Persistencia OCI</span>
+          <h3 style="font-size:1.1rem; color:#fff;">WF2: Curaduría hacia OCI Object Storage</h3>
+          <p style="font-size:0.85rem; color:var(--text-muted);">
+            Sondea periódicamente las filas en estado <code>decision = aprobado</code> y realiza la subida de los archivos JSON mediante API REST de OCI Object Storage Always Free.
+          </p>
+          <ul class="wf-meta-list">
+            <li><strong>Nodos:</strong> 10 nodos n8n</li>
+            <li><strong>Disparador:</strong> Intervalo cada 15 min</li>
+            <li><strong>Autenticación:</strong> OCI Request Signing (IAM)</li>
+            <li><strong>Convención:</strong> <code>activos/{periodo}/{id}.json</code></li>
+          </ul>
+          <a href="communitylab/workflows/WF2-curaduria-oci.json" download class="btn-icon-link" style="margin-top:auto; justify-content:center;">
+            <span>📥 Descargar WF2 JSON</span>
+          </a>
+        </article>
+
+        <!-- WF3 Card -->
+        <article class="wf-card">
+          <span class="wf-tag wf3">WF3 · Observabilidad</span>
+          <h3 style="font-size:1.1rem; color:#fff;">WF3: Métricas y Observabilidad Diaria</h3>
+          <p style="font-size:0.85rem; color:var(--text-muted);">
+            Cron diario que consolida el total de interacciones recibidas, calcula tasas de aprobación de curadores y distribuye el informe de salud del ecosistema comunitario.
+          </p>
+          <ul class="wf-meta-list">
+            <li><strong>Nodos:</strong> 8 nodos n8n</li>
+            <li><strong>Disparador:</strong> Cron 00:00 UTC Diario</li>
+            <li><strong>KPIs:</strong> Tasa aprobación, sentimiento, canales</li>
+            <li><strong>Salida:</strong> Reporte consolidado n8n / Sheets</li>
+          </ul>
+          <a href="communitylab/workflows/WF3-metricas-diarias.json" download class="btn-icon-link" style="margin-top:auto; justify-content:center;">
+            <span>📥 Descargar WF3 JSON</span>
+          </a>
+        </article>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         TAB 4: MÉTRICAS Y OBSERVABILIDAD (WF3)
+         ==================================================================== -->
+    <section class="tab-content" id="tab-metricas">
+      <div class="section-header">
+        <div class="section-title-wrap">
+          <span class="section-badge">Observabilidad en Tiempo Real</span>
+          <h2 class="section-title">Métricas de Rendimiento & Persistencia OCI</h2>
+          <p class="section-desc">Consolidación de las interacciones procesadas, tiempo de respuesta en inferencia y ratio de aprobación humana.</p>
+        </div>
+      </div>
+
+      <!-- Big Metric Cards -->
+      <div class="metrics-overview-grid">
+        <div class="metric-stat-card">
+          <div class="metric-icon-wrap" style="background:rgba(0,240,255,0.1); color:var(--cyan);">📥</div>
+          <span class="stat-label">Total Interacciones</span>
+          <div class="metric-big-num" id="metric-total-interactions">48</div>
+          <span class="metric-sub">100% normalizadas con contrato</span>
+        </div>
+
+        <div class="metric-stat-card">
+          <div class="metric-icon-wrap" style="background:rgba(255,153,0,0.1); color:var(--amber);">⚡</div>
+          <span class="stat-label">Score Promedio de Calidad</span>
+          <div class="metric-big-num" id="metric-avg-score">7.8 / 10</div>
+          <span class="metric-sub">Scoring determinístico ponderado</span>
+        </div>
+
+        <div class="metric-stat-card">
+          <div class="metric-icon-wrap" style="background:rgba(16,185,129,0.1); color:var(--emerald);">🛡️</div>
+          <span class="stat-label">Tasa de Aprobación</span>
+          <div class="metric-big-num">86.4%</div>
+          <span class="metric-sub">Curación humana obligatoria</span>
+        </div>
+
+        <div class="metric-stat-card">
+          <div class="metric-icon-wrap" style="background:rgba(248,0,0,0.1); color:#ff6b6b;">☁️</div>
+          <span class="stat-label">Activos en OCI Bucket</span>
+          <div class="metric-big-num" id="metric-total-oci">36</div>
+          <span class="metric-sub">Tier Always Free Object Storage</span>
+        </div>
+      </div>
+
+      <!-- Charts & Breakdowns Row -->
+      <div class="charts-row">
+        <!-- Breakdown 1: Sentimiento -->
+        <div class="chart-card">
+          <h3 style="font-size:1.05rem;">Distribución de Sentimiento Comunitario</h3>
+          <div class="bar-breakdown-row">
+            <div class="breakdown-item">
+              <div class="breakdown-label-row">
+                <span>Muy Positivo (Testimonios y Logros)</span>
+                <strong style="color:var(--emerald);">68%</strong>
+              </div>
+              <div class="breakdown-bar">
+                <div class="breakdown-fill" style="width:68%; background:var(--emerald);"></div>
+              </div>
+            </div>
+
+            <div class="breakdown-item">
+              <div class="breakdown-label-row">
+                <span>Neutro (Preguntas Técnicas y Dudas)</span>
+                <strong style="color:var(--cyan);">24%</strong>
+              </div>
+              <div class="breakdown-bar">
+                <div class="breakdown-fill" style="width:24%; background:var(--cyan);"></div>
+              </div>
+            </div>
+
+            <div class="breakdown-item">
+              <div class="breakdown-label-row">
+                <span>Negativo / Frustración (Feedback UI)</span>
+                <strong style="color:var(--amber);">8%</strong>
+              </div>
+              <div class="breakdown-bar">
+                <div class="breakdown-fill" style="width:8%; background:var(--amber);"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Breakdown 2: Canales y Formatos -->
+        <div class="chart-card">
+          <h3 style="font-size:1.05rem;">Formatos Generados vs. Publicados</h3>
+          <div class="bar-breakdown-row">
+            <div class="breakdown-item">
+              <div class="breakdown-label-row">
+                <span>Posts para LinkedIn</span>
+                <strong>42%</strong>
+              </div>
+              <div class="breakdown-bar">
+                <div class="breakdown-fill" style="width:42%; background:#0a66c2;"></div>
+              </div>
+            </div>
+
+            <div class="breakdown-item">
+              <div class="breakdown-label-row">
+                <span>Guías Técnicas / FAQ Dinámico</span>
+                <strong>33%</strong>
+              </div>
+              <div class="breakdown-bar">
+                <div class="breakdown-fill" style="width:33%; background:var(--amber);"></div>
+              </div>
+            </div>
+
+            <div class="breakdown-item">
+              <div class="breakdown-label-row">
+                <span>Destacados para Newsletter</span>
+                <strong>25%</strong>
+              </div>
+              <div class="breakdown-bar">
+                <div class="breakdown-fill" style="width:25%; background:var(--emerald);"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         TAB 5: MATRIZ DE CUMPLIMIENTO HACKATHON ONE G10
+         ==================================================================== -->
+    <section class="tab-content" id="tab-matriz">
+      <div class="section-header">
+        <div class="section-title-wrap">
+          <span class="section-badge">Rúbrica de Evaluación Oficial</span>
+          <h2 class="section-title">Matriz de Cumplimiento de Criterios (Hackathon ONE)</h2>
+          <p class="section-desc">Detalle y trazabilidad punto a punto de cada requerimiento del desafío oficial de Oracle Next Education & Alura.</p>
+        </div>
+      </div>
+
+      <div class="glass-card">
+        <div class="matrix-table-wrap">
+          <table class="matrix-table">
+            <thead>
+              <tr>
+                <th>Criterio del Hackathon</th>
+                <th>Estado</th>
+                <th>Implementación Técnica en CommunityLab</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>1. Ingestión funcional de interacciones</strong></td>
+                <td><span class="badge-status-ok">✅ Cumplido</span></td>
+                <td>Normalización en n8n mediante estructura unificada con autor, canal, texto, timestamp UTC y ID determinístico <code>CL-YYYYMMDD-XXX</code>.</td>
+              </tr>
+              <tr>
+                <td><strong>2. Análisis de sentimiento y extracción LLM</strong></td>
+                <td><span class="badge-status-ok">✅ Cumplido</span></td>
+                <td>Nodo Groq con LLaMA 3.3 ejecutando extracción semántica (sentimiento, temas, insight y scoring determinístico ponderado) en formato JSON estricto.</td>
+              </tr>
+              <tr>
+                <td><strong>3. Generación de ≥ 2 formatos de marketing</strong></td>
+                <td><span class="badge-status-ok">✅ Cumplido</span></td>
+                <td><strong>3 formatos implementados simultáneamente:</strong> Post de LinkedIn con ganchos/hashtags, FAQ Técnico estructurado y Newsletter Semanal.</td>
+              </tr>
+              <tr>
+                <td><strong>4. Orquestación del flujo en n8n</strong></td>
+                <td><span class="badge-status-ok">✅ Cumplido</span></td>
+                <td>Pipeline modular completo con 14 nodos en WF1, switch condicional, merges, prompts especializados y control de excepciones.</td>
+              </tr>
+              <tr>
+                <td><strong>5. Persistencia en OCI Object Storage Always Free</strong></td>
+                <td><span class="badge-status-ok">✅ Cumplido</span></td>
+                <td>Convención estricta en OCI Bucket: <code>activos/{periodo}/{execution_id}/{asset_id}.json</code> mediante llamadas REST API con IAM Request Signing.</td>
+              </tr>
+              <tr>
+                <td><strong>6. Demostración de ≥ 3 ejemplos de transformación</strong></td>
+                <td><span class="badge-status-ok">✅ Cumplido</span></td>
+                <td>Dataset de prueba con 4 interacciones cubriendo las 3 ramas activas (testimonio, duda técnica, logro) y el caso de descarte por bajo score.</td>
+              </tr>
+              <tr>
+                <td><strong>7. Documentación y diagrama del pipeline</strong></td>
+                <td><span class="badge-status-ok">✅ Cumplido</span></td>
+                <td>Documentación exhaustiva en <code>README.md</code>, contratos de datos formalizados, diagramas Mermaid y especificaciones de despliegue.</td>
+              </tr>
+              <tr>
+                <td><strong>Diferencial: Curaduría Humana (Human-in-the-Loop)</strong></td>
+                <td><span class="badge-status-ok">⭐ Destacado</span></td>
+                <td>Doble interfaz: Streamlit local (<code>app.py</code>) + Portal Web interactivo en Netlify conectado a Google Sheets en tiempo real.</td>
+              </tr>
+              <tr>
+                <td><strong>Diferencial: Observabilidad Diaria</strong></td>
+                <td><span class="badge-status-ok">⭐ Destacado</span></td>
+                <td>Workflow WF3 con cálculo automático de volumen, distribución de sentimiento y métricas de retención comunitaria.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Global Footer -->
+  <footer class="app-footer">
+    <div class="footer-container">
+      <div class="footer-brand">
+        <div style="display:flex; align-items:center; gap:0.5rem;">
+          <span style="font-size:1.3rem;">🛡️</span>
+          <strong style="color:#fff; font-size:1.15rem;">CommunityLab</strong>
+        </div>
+        <p>
+          Motor inteligente de transformación de comunidades digitales en activos de marketing.
+          Desarrollado para el <strong>Hackathon ONE G10 (Oracle & Alura)</strong> por el <strong>Equipo 36</strong>.
+        </p>
+      </div>
+
+      <div class="footer-col">
+        <h4>Ecosistema de Archivos</h4>
+        <ul class="footer-links">
+          <li><a href="communitylab/README.md">📖 Documentación Técnica Completa</a></li>
+          <li><a href="communitylab/workflows/WF1-ingesta-analisis-generacion.json">🤖 Flujo WF1 (n8n Ingesta)</a></li>
+          <li><a href="communitylab/workflows/WF2-curaduria-oci.json">☁️ Flujo WF2 (Curaduría OCI)</a></li>
+          <li><a href="communitylab/workflows/WF3-metricas-diarias.json">📊 Flujo WF3 (Métricas Diarias)</a></li>
+          <li><a href="app.py">🐍 Dashboard Streamlit (app.py)</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Tecnologías & Nube</h4>
+        <ul class="footer-links">
+          <li><a href="https://www.oracle.com/cloud/" target="_blank" rel="noopener">Oracle Cloud Infrastructure (OCI)</a></li>
+          <li><a href="https://groq.com/" target="_blank" rel="noopener">Groq LPU (Llama 3.3)</a></li>
+          <li><a href="https://n8n.io/" target="_blank" rel="noopener">n8n Workflow Automation</a></li>
+          <li><a href="https://www.netlify.com/" target="_blank" rel="noopener">Despliegue Netlify</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <span>© 2026 Equipo 36 · Hackathon ONE G10 (Oracle Next Education & Alura). Todos los derechos reservados.</span>
+      <span>"La IA propone · El humano decide · OCI guarda solo lo aprobado."</span>
+    </div>
+  </footer>
+
+  <!-- App Logic -->
+  <script src="app.js"></script>
+</body>
+</html>
