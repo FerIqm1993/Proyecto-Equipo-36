@@ -1,63 +1,378 @@
-import streamlit as st
+"""
+CommunityLab — Dashboard de Curaduría v2.1 (Streamlit)
+======================================================
+La IA propone · El humano decide · OCI guarda solo lo aprobado.
+
+Flujo de estados (coordinado con WF2 de n8n):
+- APROBAR   → decision=aprobado, estado_proceso=pendiente_oci
+                → WF2 lo detecta → PUT a OCI → marca almacenado_oci ☁️
+- RECHAZAR  → cerrado directamente aquí (cerrado_rechazado)
+                → WF2 no lo toca (ya está excluido por su filtro)
+
+Robustez:
+- El número de fila se rastrea desde la carga (asset_id NO es único:
+    cada ejecución de WF1 genera su propio asset-001-li).
+- `decision` se escribe AL FINAL: WF2 solo procesa filas con
+    decision=aprobado/rechazado, así que al escribirla última, el resto
+    de campos ya está completo cuando WF2 la lee (a prueba de carrera).
+- Soporta compatibilidad dual de columnas:
+    `decision_at` / `timestamp_decision` y `comentario` / `comentario_humano`.
+
+Requisitos (requirements.txt):
+  streamlit>=1.30.0
+  pandas>=2.0.0
+  gspread>=6.0.0
+  google-auth>=2.20.0
+
+Python 3.10+ (por la sintaxis `int | None`).
+"""
+
+import json
+from datetime import datetime, timezone
+
 import pandas as pd
+import streamlit as st
 
-st.set_page_config(page_title="CommunityLab - Panel de Curaduría", layout="centered")
+st.set_page_config(
+    page_title="CommunityLab — Curaduría",
+    page_icon="🛡️",
+    layout="wide",
+)
 
-st.title("🛡️ CommunityLab — Curaduría & Validación")
-st.caption("Revisa, edita y aprueba el contenido generado por IA antes del almacenamiento definitivo en OCI.")
+# ---------------------------------------------------------------------------
+# Conexión Google Sheets (service account)
+# ---------------------------------------------------------------------------
 
-# PEGA AQUÍ TU ENLACE CSV ENTRE LAS COMILLAS
-SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSF9vWhsFJfh4nc5EK1aTQCk9mWm7GU54Rf7ZMzhsWhRapb2ZnQuetOUuCsKbKXBQ0yM1oReU95iAHU/pub?gid=0&single=true&output=csv"
+def get_gspread_client():
+    import gspread
+    from google.oauth2.service_account import Credentials
 
-@st.cache_data(ttl=3)
-def cargar_datos():
-    try:
-        df = pd.read_csv(SHEET_CSV_URL)
-        if df.empty:
-            return None
-        # Limpiamos valores nulos (NaN) para que los campos de texto no muestren error
-        df = df.fillna("")
-        return df.iloc[-1].to_dict()
-    except Exception as e:
-        return None
+    scopes = [
+        "https://www.googleapis.com/auth/spreadsheets",
+        "https://www.googleapis.com/auth/drive",
+    ]
+    if "gcp_service_account" not in st.secrets:
+        raise KeyError(
+            "Falta la sección [gcp_service_account] en .streamlit/secrets.toml "
+            "o en los Secrets de Streamlit Cloud. Consulta FALTANTES_CURADURIA.md."
+        )
 
-datos = cargar_datos()
+    info = dict(st.secrets["gcp_service_account"])
+    creds = Credentials.from_service_account_info(info, scopes=scopes)
+    return gspread.authorize(creds)
 
-if datos is None:
-    st.warning("⏳ Esperando datos desde n8n... Ejecuta el workflow para recibir contenido.")
+
+def open_worksheet():
+    client = get_gspread_client()
+    spreadsheet_id = st.secrets.get("spreadsheet_id") or st.secrets[
+        "gcp_service_account"
+    ].get("spreadsheet_id", "")
+    
+    if not spreadsheet_id:
+        raise ValueError(
+            "spreadsheet_id no configurado en secrets.toml. Debe indicar el ID del Google Sheet."
+        )
+
+    worksheet_name = st.secrets.get("worksheet_name", "Curaduria")
+    sh = client.open_by_key(spreadsheet_id)
+    return sh.worksheet(worksheet_name)
+
+
+# ---------------------------------------------------------------------------
+# Lectura
+# ---------------------------------------------------------------------------
+
+@st.cache_data(ttl=15)
+def load_assets():
+    """Carga las filas y adjunta el NÚMERO DE FILA REAL del Sheet.
+
+    FIX CRÍTICO: asset_id se repite entre ejecuciones (asset-001-li existe
+    en cada corrida de WF1). Escribir por asset_id actualizaría la primera
+    coincidencia (una fila vieja ya cerrada) y corrompería la auditoría.
+    Por eso rastreamos la fila real: fila 1 = headers → datos desde fila 2.
+    """
+    ws = open_worksheet()
+    rows = ws.get_all_records()
+    if not rows:
+        return pd.DataFrame()
+
+    df = pd.DataFrame(rows)
+    for col in df.columns:
+        df[col] = df[col].astype(str).replace("nan", "").replace("None", "")
+
+    # Fila real ANTES de filtrar (posicional)
+    df["__row_number"] = range(2, len(df) + 2)
+
+    # Descartar filas vacías (colas de sheet), conservando el número correcto
+    if "asset_id" in df.columns:
+        df = df[df["asset_id"].astype(str).str.strip() != ""]
+
+    return df.reset_index(drop=True)
+
+
+# ---------------------------------------------------------------------------
+# Escritura
+# ---------------------------------------------------------------------------
+
+def write_decision(
+    row_number: int,
+    decision: str,
+    user: str,
+    comentario: str,
+    contenido: str | None = None,
+):
+    """Escribe la decisión del curador en la fila REAL del Sheet.
+
+    Orden de escritura deliberado: `decision` va AL FINAL. WF2 solo toma
+    filas con decision=aprobado/rechazado, así que cuando la escribe, todos
+    los demás campos ya están en su lugar (a prueba de carrera con WF2).
+    """
+    if decision not in ("aprobado", "rechazado"):
+        raise ValueError(f"Decisión inválida: {decision}")
+    if not row_number or row_number < 2:
+        raise ValueError(f"Número de fila inválido: {row_number}")
+
+    ws = open_worksheet()
+    headers = [h.strip() for h in ws.row_values(1)]
+    now = datetime.now(timezone.utc).isoformat()
+
+    estado = "aprobado" if decision == "aprobado" else "rechazado"
+    estado_proceso = "pendiente_oci" if decision == "aprobado" else "cerrado_rechazado"
+
+    def set_col(name: str, value: str):
+        if name in headers:
+            col = headers.index(name) + 1
+            ws.update_cell(row_number, col, value)
+
+    # 1) Campos auxiliares primero
+    if contenido is not None:
+        set_col("contenido", contenido)
+    set_col("estado", estado)
+    set_col("user", user or "curador")
+    
+    # Compatibilidad con ambas convenciones de encabezado
+    set_col("decision_at", now)
+    set_col("timestamp_decision", now)
+    set_col("comentario", comentario or "")
+    set_col("comentario_humano", comentario or "")
+    set_col("estado_proceso", estado_proceso)
+
+    # 2) El disparador de WF2, al final
+    set_col("decision", decision)
+
+    # Invalidar cache para que la UI refleje el cambio
+    load_assets.clear()
+
+
+# ---------------------------------------------------------------------------
+# UI Principal
+# ---------------------------------------------------------------------------
+st.title("🛡️ CommunityLab — Curaduría de activos")
+st.caption("La IA propone · El humano decide · OCI guarda solo lo aprobado")
+
+# Enlace informativo a la versión desplegada en Streamlit Cloud
+st.sidebar.markdown("### 🌐 Despliegues & Accesos")
+st.sidebar.markdown(
+    "[🛡️ Streamlit Cloud en Vivo](https://g10-latam-equipo-36.streamlit.app/)\n\n"
+    "[🌐 Portal Web Netlify](https://proyecto-equipo-36.netlify.app/)\n\n"
+    "[📁 Repositorio GitHub](https://github.com/FerIqm1993/Proyecto-Equipo-36)"
+)
+st.sidebar.divider()
+st.sidebar.info(
+    "💡 Para configurar credenciales locales crea `.streamlit/secrets.toml`. "
+    "Revisa `FALTANTES_CURADURIA.md` para la guía paso a paso."
+)
+
+try:
+    df = load_assets()
+except Exception as e:
+    st.error(
+        "⚠️ No se pudo leer Google Sheets.\n\n"
+        "Revisa que `.streamlit/secrets.toml` contenga `[gcp_service_account]`, `spreadsheet_id` "
+        "y `worksheet_name='Curaduria'`, y que el Sheet esté compartido con permisos de Editor "
+        "con el email del Service Account.\n\n"
+        f"**Detalle del error:** `{e}`"
+    )
+    st.info(
+        "👉 Revisa el archivo **`FALTANTES_CURADURIA.md`** en la raíz del proyecto para ver "
+        "la configuración exacta de credenciales requerida tanto en local como en Streamlit Cloud."
+    )
+    st.stop()
+
+if df.empty:
+    st.info("ℹ️ No hay filas en la hoja de cálculo. Ejecuta el workflow WF1 de n8n primero.")
+    st.stop()
+
+decision_col = (
+    df["decision"].str.lower().str.strip() if "decision" in df.columns
+    else pd.Series([""] * len(df))
+)
+proceso_col = (
+    df["estado_proceso"].str.lower().str.strip() if "estado_proceso" in df.columns
+    else pd.Series([""] * len(df))
+)
+
+c1, c2, c3, c4, c5 = st.columns(5)
+c1.metric("Total activos", len(df))
+c2.metric("Pendientes", int((decision_col == "pendiente").sum()))
+c3.metric("Aprobados", int((decision_col == "aprobado").sum()))
+c4.metric("Rechazados", int((decision_col == "rechazado").sum()))
+c5.metric("☁️ En OCI", int((proceso_col == "almacenado_oci").sum()))
+
+st.divider()
+
+f1, f2, f3, f4 = st.columns(4)
+with f1:
+    filtro_estado = st.selectbox(
+        "Estado decisión",
+        ["pendiente", "aprobado", "rechazado", "todos"],
+        index=0,
+    )
+with f2:
+    ejecuciones = (
+        ["todas"] + sorted(df["execution_id"].unique().tolist(), reverse=True)
+        if "execution_id" in df.columns
+        else ["todas"]
+    )
+    filtro_exec = st.selectbox("Ejecución (batch de WF1)", ejecuciones)
+with f3:
+    tipos = (
+        ["todos"] + sorted(df["tipo_activo"].dropna().unique().tolist())
+        if "tipo_activo" in df.columns
+        else ["todos"]
+    )
+    filtro_tipo = st.selectbox("Tipo de activo", tipos)
+with f4:
+    score_min = st.slider("Score mínimo", 0.0, 10.0, 0.0, 0.25)
+
+if "curador_name" not in st.session_state:
+    st.session_state.curador_name = ""
+user_name = st.text_input("Tu nombre (curador)", key="curador_name")
+
+vista = df.copy()
+if filtro_estado != "todos" and "decision" in vista.columns:
+    vista = vista[vista["decision"].str.lower().str.strip() == filtro_estado]
+if filtro_exec != "todas" and "execution_id" in vista.columns:
+    vista = vista[vista["execution_id"] == filtro_exec]
+if filtro_tipo != "todos" and "tipo_activo" in vista.columns:
+    vista = vista[vista["tipo_activo"] == filtro_tipo]
+if "score_final" in vista.columns:
+    vista = vista[
+        pd.to_numeric(vista["score_final"], errors="coerce").fillna(0) >= score_min
+    ]
+
+if not vista.empty:
+    vista = vista.copy()
+    vista["_score_num"] = (
+        pd.to_numeric(vista.get("score_final"), errors="coerce").fillna(0)
+    )
+    if "decision" in vista.columns:
+        vista["_pend"] = (vista["decision"].str.lower().str.strip() == "pendiente").astype(int)
+        vista = vista.sort_values(["_pend", "_score_num"], ascending=[False, False])
+    else:
+        vista = vista.sort_values("_score_num", ascending=False)
+
+BADGE = {
+    "linkedin": ("🔗 LinkedIn", "#0A66C2"),
+    "faq": ("❓ FAQ", "#2E7D32"),
+    "newsletter": ("📰 Newsletter", "#E65100"),
+}
+PROCESO_LABEL = {
+    "almacenado_oci": "☁️ Guardado en OCI",
+    "cerrado_rechazado": "✖ Cerrado (rechazado)",
+    "pendiente_oci": "⏳ Esperando WF2 → OCI",
+    "pendiente_decision": "…",
+}
+
+if vista.empty:
+    st.warning("No hay activos con esos filtros.")
 else:
-    st.info(f"📌 **Ejecución activa enviada por n8n:** `{datos.get('execution_id', 'CL-N/A')}`")
+    for _, row in vista.iterrows():
+        tipo = str(row.get("tipo_activo", "")).lower()
+        label, color = BADGE.get(tipo, (tipo.upper() or "—", "#555"))
+        asset_id = str(row.get("asset_id", ""))
+        exec_id = str(row.get("execution_id", ""))
+        score = row.get("score_final", "")
+        autor = row.get("autor", "")
+        decision = str(row.get("decision", "pendiente")).lower().strip()
+        proceso = str(row.get("estado_proceso", "")).lower().strip()
+        contenido = str(row.get("contenido", ""))
+        row_number = int(row.get("__row_number", 0) or 0)
 
-    with st.form("form_curaduria"):
-        st.subheader("🔵 Post para LinkedIn")
-        titulo_li = st.text_input("Título del Post", value=datos.get("post_titulo", ""))
-        copy_li = st.text_area("Copy sugerido", value=datos.get("post_copy", ""), height=150)
+        with st.container(border=True):
+            h1, h2 = st.columns([4, 1])
+            with h1:
+                st.markdown(
+                    f"<span style='background:{color};color:white;padding:4px 10px;"
+                    f"border-radius:6px;font-weight:600'>{label}</span> "
+                    f"**{asset_id}** · {autor} · <code>{exec_id}</code>",
+                    unsafe_allow_html=True,
+                )
+            with h2:
+                st.metric("Score", score)
 
-        st.divider()
+            if decision == "pendiente" and row_number >= 2:
+                nuevo_contenido = st.text_area(
+                    "Contenido (editable antes de aprobar)",
+                    value=contenido,
+                    height=180,
+                    key=f"content_{asset_id}_{row_number}",
+                )
+                comentario = st.text_input(
+                    "Comentario (opcional, recomendado para auditoría)",
+                    key=f"com_{asset_id}_{row_number}",
+                )
+                b1, b2, _ = st.columns([1, 1, 3])
+                with b1:
+                    if st.button("✅ Aprobar", key=f"ok_{row_number}", type="primary"):
+                        try:
+                            contenido_a_guardar = (
+                                nuevo_contenido
+                                if nuevo_contenido.strip() != contenido.strip()
+                                else None
+                            )
+                            write_decision(
+                                row_number,
+                                "aprobado",
+                                user_name.strip(),
+                                comentario,
+                                contenido=contenido_a_guardar,
+                            )
+                            st.success(f"Aprobado: {asset_id} ({exec_id})")
+                            st.rerun()
+                        except Exception as ex:
+                            st.error(str(ex))
+                with b2:
+                    if st.button("❌ Rechazar", key=f"no_{row_number}"):
+                        try:
+                            write_decision(
+                                row_number,
+                                "rechazado",
+                                user_name.strip(),
+                                comentario,
+                            )
+                            st.warning(f"Rechazado: {asset_id} ({exec_id})")
+                            st.rerun()
+                        except Exception as ex:
+                            st.error(str(ex))
+            else:
+                st.text_area(
+                    "Contenido",
+                    value=contenido,
+                    height=120,
+                    disabled=True,
+                    key=f"ro_{row_number}",
+                )
+                st.caption(
+                    f"Decisión: **{decision}** · por {row.get('user', '')} · "
+                    f"{row.get('decision_at', row.get('timestamp_decision', ''))} · "
+                    f"{PROCESO_LABEL.get(proceso, proceso)}"
+                )
+                comentario_text = row.get("comentario") or row.get("comentario_humano")
+                if comentario_text:
+                    st.caption(f"💬 {comentario_text}")
 
-        st.subheader("🟡 FAQ / Tip Técnico")
-        tema_faq = st.text_input("Tema", value=datos.get("faq_tema", ""))
-        resp_faq = st.text_area("Respuesta", value=datos.get("faq_respuesta", ""), height=100)
-
-        st.divider()
-
-        st.subheader("🟢 Newsletter")
-        titular_nl = st.text_input("Titular", value=datos.get("newsletter_titular", ""))
-        resumen_nl = st.text_area("Resumen", value=datos.get("newsletter_resumen", ""), height=100)
-
-        st.divider()
-
-        aprobar = st.form_submit_button("✅ Aprobar y Guardar en OCI Object Storage")
-
-    if aprobar:
-        json_aprobado = {
-            "status": "aprobado_y_persistido",
-            "execution_id": datos.get("execution_id"),
-            "activos_validados": {
-                "linkedin": {"titulo": titulo_li, "copy": copy_li},
-                "faq": {"tema": tema_faq, "respuesta": resp_faq},
-                "newsletter": {"titular": titular_nl, "resumen": resumen_nl}
-            }
-        }
-        st.success("🎉 ¡Contenido curado y enviado con éxito a OCI Object Storage!")
-        st.json(json_aprobado)
+st.divider()
+if st.button("🔄 Refrescar datos"):
+    load_assets.clear()
+    st.rerun()

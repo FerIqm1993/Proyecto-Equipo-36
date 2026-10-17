@@ -68,10 +68,12 @@ communitylab/
 ## ⚡ Enlaces Rápidos
 
 - 🌐 **[Despliegue Web Oficial en Vivo (Netlify)](https://proyecto-equipo-36.netlify.app/)**
+- 🛡️ **[Dashboard de Curaduría en Vivo (Streamlit Cloud)](https://g10-latam-equipo-36.streamlit.app/)**
 - 📖 **[Documentación Técnica Completa](communitylab/README.md)** (Arquitectura Mermaid, Contratos de Datos y Matriz de Cumplimiento)
 - 🤖 **[Workflows de n8n](communitylab/workflows/)**
-- 🖥️ **[Dashboard de Curaduría Streamlit](communitylab/dashboard/)** / [`app.py`](app.py)
-- 🛡️ **[Manual del Dashboard](communitylab/dashboard/README-dashboard.md)**
+- 🖥️ **[Dashboard de Curaduría Streamlit Local](app.py)** / [`communitylab/dashboard/`](communitylab/dashboard/)
+- 🛡️ **[Manual del Dashboard & Guía de Faltantes](FALTANTES_CURADURIA.md)**
+- 📦 **[Repositorio Curaduría Streamlit (Oscar)](https://github.com/VelaztiquiOscar/G10-LATAM-EQUIPO-36.git)**
 
 ---
 *Desarrollado con dedicación por el **Equipo 36** — Hackathon ONE G10 (Oracle & Alura).*

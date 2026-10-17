@@ -4,41 +4,30 @@ CommunityLab — Dashboard de Curaduría v2.1 (Streamlit)
 La IA propone · El humano decide · OCI guarda solo lo aprobado.
 
 Flujo de estados (coordinado con WF2 de n8n):
-  - APROBAR   → decision=aprobado, estado_proceso=pendiente_oci
+- APROBAR   → decision=aprobado, estado_proceso=pendiente_oci
                 → WF2 lo detecta → PUT a OCI → marca almacenado_oci ☁️
-  - RECHAZAR  → cerrado directamente aquí (cerrado_rechazado)
+- RECHAZAR  → cerrado directamente aquí (cerrado_rechazado)
                 → WF2 no lo toca (ya está excluido por su filtro)
 
 Robustez:
-  - El número de fila se rastrea desde la carga (asset_id NO es único:
+- El número de fila se rastrea desde la carga (asset_id NO es único:
     cada ejecución de WF1 genera su propio asset-001-li).
-  - `decision` se escribe AL FINAL: WF2 solo procesa filas con
+- `decision` se escribe AL FINAL: WF2 solo procesa filas con
     decision=aprobado/rechazado, así que al escribirla última, el resto
     de campos ya está completo cuando WF2 la lee (a prueba de carrera).
+- Soporta compatibilidad dual de columnas:
+    `decision_at` / `timestamp_decision` y `comentario` / `comentario_humano`.
 
 Requisitos (requirements.txt):
-  streamlit
-  pandas
-  gspread
-  google-auth
+  streamlit>=1.30.0
+  pandas>=2.0.0
+  gspread>=6.0.0
+  google-auth>=2.20.0
 
 Python 3.10+ (por la sintaxis `int | None`).
-
-.streamlit/secrets.toml — ejemplo:
-  [gcp_service_account]
-  type = "service_account"
-  project_id = "..."
-  private_key = "-----BEGIN PRIVATE KEY-----\\n...\\n-----END PRIVATE KEY-----\\n"
-  client_email = "xxx@xxx.iam.gserviceaccount.com"
-  client_id = "..."
-  spreadsheet_id = "1nY40IJ4ludaHQcTEV8nDlHNi6ikl-4x5CUJocvrsHfk"
-  worksheet_name = "Curaduria"        # ⚠️ NO "Hoja 1" — la pestaña se llama Curaduria
-
-⚠️ No olvides compartir el Google Sheet con el client_email del service
-   account (permiso de Editor).
 """
 
-import json  # noqa: F401 (reservado para futuras mejoras de contenido_json)
+import json
 from datetime import datetime, timezone
 
 import pandas as pd
@@ -54,7 +43,6 @@ st.set_page_config(
 # Conexión Google Sheets (service account)
 # ---------------------------------------------------------------------------
 
-
 def get_gspread_client():
     import gspread
     from google.oauth2.service_account import Credentials
@@ -63,6 +51,12 @@ def get_gspread_client():
         "https://www.googleapis.com/auth/spreadsheets",
         "https://www.googleapis.com/auth/drive",
     ]
+    if "gcp_service_account" not in st.secrets:
+        raise KeyError(
+            "Falta la sección [gcp_service_account] en .streamlit/secrets.toml "
+            "o en los Secrets de Streamlit Cloud. Consulta FALTANTES_CURADURIA.md."
+        )
+
     info = dict(st.secrets["gcp_service_account"])
     creds = Credentials.from_service_account_info(info, scopes=scopes)
     return gspread.authorize(creds)
@@ -73,7 +67,13 @@ def open_worksheet():
     spreadsheet_id = st.secrets.get("spreadsheet_id") or st.secrets[
         "gcp_service_account"
     ].get("spreadsheet_id", "")
-    worksheet_name = st.secrets.get("worksheet_name", "Curaduria")  # default correcto
+    
+    if not spreadsheet_id:
+        raise ValueError(
+            "spreadsheet_id no configurado en secrets.toml. Debe indicar el ID del Google Sheet."
+        )
+
+    worksheet_name = st.secrets.get("worksheet_name", "Curaduria")
     sh = client.open_by_key(spreadsheet_id)
     return sh.worksheet(worksheet_name)
 
@@ -81,7 +81,6 @@ def open_worksheet():
 # ---------------------------------------------------------------------------
 # Lectura
 # ---------------------------------------------------------------------------
-
 
 @st.cache_data(ttl=15)
 def load_assets():
@@ -91,7 +90,6 @@ def load_assets():
     en cada corrida de WF1). Escribir por asset_id actualizaría la primera
     coincidencia (una fila vieja ya cerrada) y corrompería la auditoría.
     Por eso rastreamos la fila real: fila 1 = headers → datos desde fila 2.
-    (Asume filas contiguas: cierto, porque WF1 hace append.)
     """
     ws = open_worksheet()
     rows = ws.get_all_records()
@@ -116,7 +114,6 @@ def load_assets():
 # Escritura
 # ---------------------------------------------------------------------------
 
-
 def write_decision(
     row_number: int,
     decision: str,
@@ -129,10 +126,6 @@ def write_decision(
     Orden de escritura deliberado: `decision` va AL FINAL. WF2 solo toma
     filas con decision=aprobado/rechazado, así que cuando la escribe, todos
     los demás campos ya están en su lugar (a prueba de carrera con WF2).
-
-    Si el curador editó el contenido: `contenido` guarda la versión humana
-    y `contenido_json` conserva la salida ORIGINAL del LLM — es el registro
-    de auditoría del human-in-the-loop, no un bug.
     """
     if decision not in ("aprobado", "rechazado"):
         raise ValueError(f"Decisión inválida: {decision}")
@@ -156,8 +149,12 @@ def write_decision(
         set_col("contenido", contenido)
     set_col("estado", estado)
     set_col("user", user or "curador")
+    
+    # Compatibilidad con ambas convenciones de encabezado
     set_col("decision_at", now)
+    set_col("timestamp_decision", now)
     set_col("comentario", comentario or "")
+    set_col("comentario_humano", comentario or "")
     set_col("estado_proceso", estado_proceso)
 
     # 2) El disparador de WF2, al final
@@ -168,27 +165,44 @@ def write_decision(
 
 
 # ---------------------------------------------------------------------------
-# UI
+# UI Principal
 # ---------------------------------------------------------------------------
 st.title("🛡️ CommunityLab — Curaduría de activos")
 st.caption("La IA propone · El humano decide · OCI guarda solo lo aprobado")
+
+# Enlace informativo a la versión desplegada en Streamlit Cloud
+st.sidebar.markdown("### 🌐 Despliegues & Accesos")
+st.sidebar.markdown(
+    "[🛡️ Streamlit Cloud en Vivo](https://g10-latam-equipo-36.streamlit.app/)\n\n"
+    "[🌐 Portal Web Netlify](https://proyecto-equipo-36.netlify.app/)\n\n"
+    "[📁 Repositorio GitHub](https://github.com/FerIqm1993/Proyecto-Equipo-36)"
+)
+st.sidebar.divider()
+st.sidebar.info(
+    "💡 Para configurar credenciales locales crea `.streamlit/secrets.toml`. "
+    "Revisa `FALTANTES_CURADURIA.md` para la guía paso a paso."
+)
 
 try:
     df = load_assets()
 except Exception as e:
     st.error(
-        "No se pudo leer Google Sheets. Revisa `.streamlit/secrets.toml` "
-        "(service account + spreadsheet_id + worksheet_name='Curaduria') y que "
-        "el Sheet esté compartido con el email del service account (Editor).\n\n"
-        f"Detalle: {e}"
+        "⚠️ No se pudo leer Google Sheets.\n\n"
+        "Revisa que `.streamlit/secrets.toml` contenga `[gcp_service_account]`, `spreadsheet_id` "
+        "y `worksheet_name='Curaduria'`, y que el Sheet esté compartido con permisos de Editor "
+        "con el email del Service Account.\n\n"
+        f"**Detalle del error:** `{e}`"
+    )
+    st.info(
+        "👉 Revisa el archivo **`FALTANTES_CURADURIA.md`** en la raíz del proyecto para ver "
+        "la configuración exacta de credenciales requerida tanto en local como en Streamlit Cloud."
     )
     st.stop()
 
 if df.empty:
-    st.info("No hay filas en la hoja. Ejecuta el WF1 de n8n primero.")
+    st.info("ℹ️ No hay filas en la hoja de cálculo. Ejecuta el workflow WF1 de n8n primero.")
     st.stop()
 
-# ---- Métricas (5) ----------------------------------------------------------
 decision_col = (
     df["decision"].str.lower().str.strip() if "decision" in df.columns
     else pd.Series([""] * len(df))
@@ -207,7 +221,6 @@ c5.metric("☁️ En OCI", int((proceso_col == "almacenado_oci").sum()))
 
 st.divider()
 
-# ---- Filtros (4) -----------------------------------------------------------
 f1, f2, f3, f4 = st.columns(4)
 with f1:
     filtro_estado = st.selectbox(
@@ -232,12 +245,10 @@ with f3:
 with f4:
     score_min = st.slider("Score mínimo", 0.0, 10.0, 0.0, 0.25)
 
-# Nombre del curador (persiste en la sesión entre reruns)
 if "curador_name" not in st.session_state:
     st.session_state.curador_name = ""
 user_name = st.text_input("Tu nombre (curador)", key="curador_name")
 
-# ---- Aplicar filtros -------------------------------------------------------
 vista = df.copy()
 if filtro_estado != "todos" and "decision" in vista.columns:
     vista = vista[vista["decision"].str.lower().str.strip() == filtro_estado]
@@ -250,7 +261,6 @@ if "score_final" in vista.columns:
         pd.to_numeric(vista["score_final"], errors="coerce").fillna(0) >= score_min
     ]
 
-# Orden: pendientes primero, luego mayor score
 if not vista.empty:
     vista = vista.copy()
     vista["_score_num"] = (
@@ -262,7 +272,6 @@ if not vista.empty:
     else:
         vista = vista.sort_values("_score_num", ascending=False)
 
-# ---- Tarjetas --------------------------------------------------------------
 BADGE = {
     "linkedin": ("🔗 LinkedIn", "#0A66C2"),
     "faq": ("❓ FAQ", "#2E7D32"),
@@ -288,7 +297,6 @@ else:
         decision = str(row.get("decision", "pendiente")).lower().strip()
         proceso = str(row.get("estado_proceso", "")).lower().strip()
         contenido = str(row.get("contenido", ""))
-        # FIX: fila REAL del Sheet (asset_id no es único entre ejecuciones)
         row_number = int(row.get("__row_number", 0) or 0)
 
         with st.container(border=True):
@@ -304,7 +312,6 @@ else:
                 st.metric("Score", score)
 
             if decision == "pendiente" and row_number >= 2:
-                # --- Pendiente: editable + botones ---
                 nuevo_contenido = st.text_area(
                     "Contenido (editable antes de aprobar)",
                     value=contenido,
@@ -322,7 +329,7 @@ else:
                             contenido_a_guardar = (
                                 nuevo_contenido
                                 if nuevo_contenido.strip() != contenido.strip()
-                                else None  # sin edición → no reescribir
+                                else None
                             )
                             write_decision(
                                 row_number,
@@ -349,7 +356,6 @@ else:
                         except Exception as ex:
                             st.error(str(ex))
             else:
-                # --- Ya decidido: solo lectura + auditoría ---
                 st.text_area(
                     "Contenido",
                     value=contenido,
@@ -359,11 +365,12 @@ else:
                 )
                 st.caption(
                     f"Decisión: **{decision}** · por {row.get('user', '')} · "
-                    f"{row.get('decision_at', '')} · "
+                    f"{row.get('decision_at', row.get('timestamp_decision', ''))} · "
                     f"{PROCESO_LABEL.get(proceso, proceso)}"
                 )
-                if row.get("comentario"):
-                    st.caption(f"💬 {row.get('comentario')}")
+                comentario_text = row.get("comentario") or row.get("comentario_humano")
+                if comentario_text:
+                    st.caption(f"💬 {comentario_text}")
 
 st.divider()
 if st.button("🔄 Refrescar datos"):
