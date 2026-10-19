@@ -320,22 +320,23 @@ Para una cadena E2E completa, relacionar el mismo `execution_id` (y `asset_id`) 
 
 | # | Archivo | Contenido validado |
 |---|---------|-------------------|
-| 00 | `00-n8n-overview-workflows.png` | Panel n8n: **487+ ejecuciones**, ~**0.4%** tasa de fallo (valores visibles en la captura) |
-| 01 | `01-wf1-arquitectura.png` | Canvas WF1 |
-| 02 | `02-wf2-arquitectura.png` | Canvas WF2 |
-| 03 | `03-wf3-arquitectura.png` | Canvas WF3 |
-| 04 | `04-oci-bucket-prefijos.png` | Bucket OCI y prefijos |
-| 05 | `05-oci-json-trazabilidad.png` | Objeto JSON en OCI |
-| 06a | `06-sheet-curaduria-datos.png` | Sheet: contenidos y scores |
-| 06b | `06-sheet-curaduria-estados.png` | Sheet: decisiones y `almacenado_oci` |
-| 07a | `07-sheet-metricas-diarias.png` | Métricas diarias |
-| 07b | `07-sheet-metricas-descartes.png` | Embudo de descartes |
-| 08 | `08-datatable-descartes.png` | Data Table de descartes |
-| 09 | `09-execuciones-automaticas-wf2.png` | Schedule WF2 en Success |
-| 10 | `10-panel-curaduria.png` | Streamlit operativo |
-| 11 | `11-landing-presentacion.png` | Landing **demostrativa** (Netlify) |
-| 12 | `12-reqbin-post-ingesta.png` | POST → 200 + `Workflow was started` |
-| 13 | `13-executions-wf1-success.png` | Historial Success de WF1 |
+| 00 | [`00-n8n-overview-workflows.png`](docs/capturas/00-n8n-overview-workflows.png) | Panel n8n: **487+ ejecuciones**, ~**0.4%** tasa de fallo (valores visibles en la captura) |
+| 01 | [`01-wf1-arquitectura.png`](docs/capturas/01-wf1-arquitectura.png) | Canvas WF1 |
+| 02 | [`02-wf2-arquitectura.png`](docs/capturas/02-wf2-arquitectura.png) | Canvas WF2 |
+| 03 | [`03-wf3-arquitectura.png`](docs/capturas/03-wf3-arquitectura.png) | Canvas WF3 |
+| 04 | [`04-oci-bucket-prefijos.png`](docs/capturas/04-oci-bucket-prefijos.png) | Bucket OCI y prefijos |
+| 05 | [`05-oci-json-trazabilidad.png`](docs/capturas/05-oci-json-trazabilidad.png) | Objeto JSON en OCI |
+| 06a | [`06-sheet-curaduria-datos.png`](docs/capturas/06-sheet-curaduria-datos.png) | Sheet: contenidos y scores |
+| 06b | [`06-sheet-curaduria-estados.png`](docs/capturas/06-sheet-curaduria-estados.png) | Sheet: decisiones y `almacenado_oci` |
+| 07a | [`07-sheet-metricas-diarias.png`](docs/capturas/07-sheet-metricas-diarias.png) | Métricas diarias |
+| 07b | [`07-sheet-metricas-descartes.png`](docs/capturas/07-sheet-metricas-descartes.png) | Embudo de descartes |
+| 08 | [`08-datatable-descartes.png`](docs/capturas/08-datatable-descartes.png) | Data Table de descartes |
+| 09 | [`09-execuciones-automaticas-wf2.png`](docs/capturas/09-execuciones-automaticas-wf2.png) | Schedule WF2 en Success |
+| 10 | [`10-panel-curaduria.png`](docs/capturas/10-panel-curaduria.png) | Streamlit operativo |
+| 11 | [`11-landing-presentacion.png`](docs/capturas/11-landing-presentacion.png) | Landing **demostrativa** (Netlify) |
+| 12 | [`12-reqbin-post-ingesta.png`](docs/capturas/12-reqbin-post-ingesta.png) | POST → 200 + `Workflow was started` |
+| 13 | [`13-executions-wf1-success.png`](docs/capturas/13-executions-wf1-success.png) | Historial Success de WF1 |
+
 
 **Lectura de la evidencia E2E:**  
 Ingesta externa validada con POST y HTTP 200 (captura 12). El procesamiento posterior se acredita con la ejecución exitosa de WF1 (13) y las filas en Curaduria (06). La persistencia se verifica tras la aprobación humana, mediante WF2 (02, 09) y el objeto en OCI (04, 05).
