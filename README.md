@@ -29,11 +29,18 @@
    - Ningún activo se publica ni se sube a la nube sin el consentimiento explícito del curador humano.
 
 3. **☁️ Persistencia Cloud (Oracle Cloud Infrastructure - OCI):**
-   - Integración nativa con **OCI Object Storage Always Free**.
-   - Persistencia segura y organizada por ejecución y período de referencia únicamente para contenidos aprobados.
+   - Integración con **OCI Object Storage Always Free** mediante solicitudes HTTP PUT autenticadas por **Pre-Authenticated Request (PAR)**.
+   - Convención: `activos/aprobados/{execution_id}/{asset_id}.json` exclusivamente para contenidos con decisión humana aprobada.
 
-4. **📊 Observabilidad y Métricas Diarias:**
-   - Flujo automatizado que consolida diariamente el volumen de interacciones, distribución de sentimiento y ratio de aprobación.
+4. **📊 Observabilidad, Métricas Diarias & Power BI:**
+   - Flujo automatizado **WF3** que consolida diariamente en Google Sheets (`Metricas_diarias` y `Metricas_descartes_diarias`).
+   - Adaptación del modelo analítico oficial en **Power BI Desktop** (`CommunityLab_Dashboard.pbix`):
+     - **Página 1 — Resumen del Pipeline:** Tarjetas de estado, embudo DAX (Generados ➔ Curados ➔ Aprobados ➔ OCI), anillo por canal y reconciliación OCI (`✔ Aprobados = Oracle`).
+     - **Página 2 — Auditoría de Descartes:** Monitoreo y clasificación de motivos de descarte (`tipo_no_elegible`, `sentimiento_no_positivo`, `fallo_generacion`).
+     - Regla DAX: Todas las medidas aplican `MAX(fecha)` sobre el último día consolidado.
+
+5. **🔐 Credenciales y Secretos Centralizados:**
+   - Archivo consolidado [`DATOS_SENSIBLES_SECRETS_PROYECTO36.md`](DATOS_SENSIBLES_SECRETS_PROYECTO36.md) con los bloques listos para copiar y pegar en **Streamlit Cloud** (`Settings > Secrets`) y en **Netlify** (`Environment variables`).
 
 ---
 
@@ -47,17 +54,18 @@ communitylab/
 ├── .gitignore                                # Exclusiones de Git
 ├── .env.example                              # Plantilla de variables de entorno
 ├── workflows/                                # Workflows exportados de n8n
-│   ├── WF1-ingesta-analisis-generacion.json  # Ingesta, análisis semántico con LLM y generación
-│   ├── WF2-curaduria-oci.json                # Curaduría hacia OCI Object Storage Always Free
-│   ├── WF3-metricas-diarias.json             # Cálculo de métricas y observabilidad diaria
+│   ├── WF1-ingesta-analisis-generacion.json  # v1.8: Ingesta, validación y generación Groq
+│   ├── WF2-curaduria-oci.json                # v1.4: Curaduría hacia OCI vía PAR PUT
+│   ├── WF3-metricas-diarias.json             # v1.2: Métricas diarias y auditoría descartes
 │   └── sample-payload-ingesta.json           # Payload JSON de prueba para el Webhook de WF1
 ├── dashboard/                                # Aplicación de Curaduría en Streamlit
-│   ├── dashboard_curaduria.py                # Interfaz Human-in-the-Loop
+│   ├── dashboard_curaduria.py                # Interfaz Human-in-the-Loop y Power BI v2.2
 │   ├── requirements.txt                      # Dependencias Python
 │   ├── README-dashboard.md                   # Manual de uso y configuración del dashboard
 │   ├── plantilla_curaduria.csv               # Esquema de Google Sheets con filas de ejemplo
 │   └── .streamlit/
 │       └── secrets.toml.example              # Plantilla de credenciales GCP y Sheets
+├── CommunityLab_Dashboard.pbix.pbip          # Proyecto y modelo oficial de Power BI Desktop
 └── docs/
     ├── README.md                             # Guía de capturas y catálogo de evidencias
     └── capturas/                             # Evidencias de ejecución y capturas
@@ -68,10 +76,11 @@ communitylab/
 ## ⚡ Enlaces Rápidos
 
 - 🌐 **[Despliegue Web Oficial en Vivo (Netlify)](https://proyecto-equipo-36.netlify.app/)**
-- 🛡️ **[Dashboard de Curaduría en Vivo (Streamlit Cloud)](https://g10-latam-equipo-36.streamlit.app/)**
+- 🛡️ **[Dashboard de Curaduría & Métricas en Vivo (Streamlit Cloud)](https://g10-latam-equipo-36.streamlit.app/)**
+- 🔐 **[Credenciales & Secretos Consolidados](DATOS_SENSIBLES_SECRETS_PROYECTO36.md)**
 - 📖 **[Documentación Técnica Completa](communitylab/README.md)** (Arquitectura Mermaid, Contratos de Datos y Matriz de Cumplimiento)
 - 🤖 **[Workflows de n8n](communitylab/workflows/)**
-- 🖥️ **[Dashboard de Curaduría Streamlit Local](app.py)** / [`communitylab/dashboard/`](communitylab/dashboard/)
+- 🖥️ **[Dashboard Streamlit Local v2.2 (app.py)](app.py)** / [`communitylab/dashboard/`](communitylab/dashboard/)
 - 🛡️ **[Manual del Dashboard & Guía de Faltantes](FALTANTES_CURADURIA.md)**
 - 📦 **[Repositorio Curaduría Streamlit (Oscar)](https://github.com/VelaztiquiOscar/G10-LATAM-EQUIPO-36.git)**
 

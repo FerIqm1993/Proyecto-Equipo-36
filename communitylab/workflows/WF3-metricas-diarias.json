@@ -1,11 +1,13 @@
 {
-  "name": "CommunityLab - WF3 Métricas diarias",
+  "name": "CommunityLab - WF3 Métricas diarias + Descartados v1.2",
   "nodes": [
     {
       "parameters": {
         "rule": {
           "interval": [
-            {}
+            {
+              "triggerAtMinute": 15
+            }
           ]
         }
       },
@@ -13,8 +15,10 @@
       "name": "Schedule Trigger (diario)",
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.2,
-      "position": [0, 0],
-      "notes": "Configurar intervalo diario (ej. cada día a las 00:00). Publish para que corra solo."
+      "position": [
+        0,
+        0
+      ]
     },
     {
       "parameters": {},
@@ -22,13 +26,16 @@
       "name": "Manual Trigger",
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
-      "position": [0, 208]
+      "position": [
+        0,
+        208
+      ]
     },
     {
       "parameters": {
         "documentId": {
           "__rl": true,
-          "value": "COLOCA_AQUI_EL_ID_DE_TU_GOOGLE_SHEET",
+          "value": "1nY40IJ4ludaHQcTEV8nDlHNi6ikl-4x5CUJocvrsHfk",
           "mode": "id"
         },
         "sheetName": {
@@ -42,25 +49,36 @@
       "name": "Leer Curaduría (Sheets)",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.7,
-      "position": [240, 0],
-      "notes": "Credential: Google Sheets OAuth2 · pestaña Curaduria"
+      "position": [
+        240,
+        0
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "keQl0Xe7WgYyM3x6",
+          "name": "Google Sheets account"
+        }
+      }
     },
     {
       "parameters": {
-        "jsCode": "// WF3 — Snapshot acumulado de curación + nuevos del día (UTC)\nconst rows = $input.all().map(i => i.json);\nconst hoy = new Date().toISOString().slice(0, 10);\n\nlet total = 0;\nlet pendientes = 0, aprobados = 0, rechazados = 0;\nlet almacenadoOci = 0, pendienteOci = 0, errorOci = 0, dryRun = 0;\nlet decisionInvalida = 0, noVerificada = 0;\nlet linkedin = 0, faq = 0, newsletter = 0;\nlet sumaScore = 0, conScore = 0;\nlet nuevosHoy = 0;\nconst executions = new Set();\n\nfor (const r of rows) {\n  const decision = String(r.decision || \"\").toLowerCase().trim();\n  const proceso = String(r.estado_proceso || \"\").toLowerCase().trim();\n  const tipo = String(r.tipo_activo || \"\").toLowerCase().trim();\n\n  total++;\n\n  if (decision === \"pendiente\" || proceso === \"pendiente_decision\") pendientes++;\n  if (decision === \"aprobado\") aprobados++;\n  if (decision === \"rechazado\") rechazados++;\n\n  if (proceso === \"almacenado_oci\") almacenadoOci++;\n  if (proceso === \"pendiente_oci\") pendienteOci++;\n  if (proceso === \"error_oci\") errorOci++;\n  if (proceso === \"put_desactivado_dry_run\") dryRun++;\n  if (proceso === \"decision_invalida\") decisionInvalida++;\n  if (proceso === \"respuesta_oci_no_verificada\") noVerificada++;\n\n  if (tipo === \"linkedin\") linkedin++;\n  else if (tipo === \"faq\") faq++;\n  else if (tipo === \"newsletter\") newsletter++;\n\n  const raw = r.score_final;\n  if (raw !== null && raw !== undefined && String(raw).trim() !== \"\") {\n    const sc = Number(raw);\n    if (Number.isFinite(sc)) {\n      sumaScore += sc;\n      conScore++;\n    }\n  }\n\n  if (r.execution_id) executions.add(String(r.execution_id));\n\n  const ts = String(r.timestamp_ingesta || r.timestamp || \"\");\n  if (ts.startsWith(hoy)) nuevosHoy++;\n}\n\nreturn [{\n  json: {\n    fecha: hoy,\n    total_activos: total,\n    pendientes,\n    aprobados,\n    rechazados,\n    almacenado_oci: almacenadoOci,\n    pendiente_oci: pendienteOci,\n    error_oci: errorOci,\n    put_desactivado_dry_run: dryRun,\n    decision_invalida: decisionInvalida,\n    respuesta_oci_no_verificada: noVerificada,\n    linkedin,\n    faq,\n    newsletter,\n    score_promedio: conScore ? Number((sumaScore / conScore).toFixed(2)) : 0,\n    execution_ids_distintos: executions.size,\n    nuevos_activos_hoy: nuevosHoy,\n    generado_at: new Date().toISOString()\n  }\n}];"
+        "jsCode": "// WF3 v1.2 — Snapshot acumulado de curación + nuevos del día (UTC)\nconst rows = $input.all().map(i => i.json);\nconst hoy = new Date().toISOString().slice(0, 10);\n\nlet total = 0;\nlet pendientes = 0, aprobados = 0, rechazados = 0;\nlet almacenadoOci = 0, pendienteOci = 0, errorOci = 0, dryRun = 0;\nlet decisionInvalida = 0, noVerificada = 0;\nlet linkedin = 0, faq = 0, newsletter = 0;\nlet sumaScore = 0, conScore = 0;\nlet nuevosHoy = 0;\nconst executions = new Set();\n\nfor (const r of rows) {\n  const decision = String(r.decision || \"\").toLowerCase().trim();\n  const proceso = String(r.estado_proceso || \"\").toLowerCase().trim();\n  const tipo = String(r.tipo_activo || \"\").toLowerCase().trim();\n\n  total++;\n\n  if (decision === \"pendiente\" || proceso === \"pendiente_decision\") pendientes++;\n  if (decision === \"aprobado\") aprobados++;\n  if (decision === \"rechazado\") rechazados++;\n\n  if (proceso === \"almacenado_oci\") almacenadoOci++;\n  if (proceso === \"pendiente_oci\") pendienteOci++;\n  if (proceso === \"error_oci\") errorOci++;\n  if (proceso === \"put_desactivado_dry_run\") dryRun++;\n  if (proceso === \"decision_invalida\") decisionInvalida++;\n  if (proceso === \"respuesta_oci_no_verificada\") noVerificada++;\n\n  if (tipo === \"linkedin\") linkedin++;\n  else if (tipo === \"faq\") faq++;\n  else if (tipo === \"newsletter\") newsletter++;\n\n  // Fix #4: score vacío NO cuenta como 0\n  const raw = r.score_final;\n  if (raw !== null && raw !== undefined && String(raw).trim() !== \"\") {\n    const sc = Number(raw);\n    if (Number.isFinite(sc)) {\n      sumaScore += sc;\n      conScore++;\n    }\n  }\n\n  if (r.execution_id) executions.add(String(r.execution_id));\n\n  // Fix #1: timestamp_ingesta (si existiera) || timestamp de la fila de curación\n  const ts = String(r.timestamp_ingesta || r.timestamp || \"\");\n  if (ts.startsWith(hoy)) nuevosHoy++;\n}\n\nreturn [{\n  json: {\n    fecha: hoy,\n    total_activos: total,\n    pendientes,\n    aprobados,\n    rechazados,\n    almacenado_oci: almacenadoOci,\n    pendiente_oci: pendienteOci,\n    error_oci: errorOci,\n    put_desactivado_dry_run: dryRun,\n    decision_invalida: decisionInvalida,\n    respuesta_oci_no_verificada: noVerificada,\n    linkedin,\n    faq,\n    newsletter,\n    score_promedio: conScore ? Number((sumaScore / conScore).toFixed(2)) : 0,\n    execution_ids_distintos: executions.size,\n    nuevos_activos_hoy: nuevosHoy,\n    generado_at: new Date().toISOString()\n  }\n}];"
       },
       "id": "7eb07436-d576-42ae-bd98-7f54e66d4f02",
       "name": "Agregar totales Curaduría",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [480, 0]
+      "position": [
+        480,
+        0
+      ]
     },
     {
       "parameters": {
         "operation": "append",
         "documentId": {
           "__rl": true,
-          "value": "COLOCA_AQUI_EL_ID_DE_TU_GOOGLE_SHEET",
+          "value": "1nY40IJ4ludaHQcTEV8nDlHNi6ikl-4x5CUJocvrsHfk",
           "mode": "id"
         },
         "sheetName": {
@@ -72,7 +90,188 @@
           "mappingMode": "autoMapInputData",
           "value": {},
           "matchingColumns": [],
-          "schema": [],
+          "schema": [
+            {
+              "id": "fecha",
+              "displayName": "fecha",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "total_activos",
+              "displayName": "total_activos",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "pendientes",
+              "displayName": "pendientes",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "aprobados",
+              "displayName": "aprobados",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "rechazados",
+              "displayName": "rechazados",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "almacenado_oci",
+              "displayName": "almacenado_oci",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "pendiente_oci",
+              "displayName": "pendiente_oci",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "error_oci",
+              "displayName": "error_oci",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "put_desactivado_dry_run",
+              "displayName": "put_desactivado_dry_run",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "decision_invalida",
+              "displayName": "decision_invalida",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "respuesta_oci_no_verificada",
+              "displayName": "respuesta_oci_no_verificada",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "linkedin",
+              "displayName": "linkedin",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "faq",
+              "displayName": "faq",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "newsletter",
+              "displayName": "newsletter",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "score_promedio",
+              "displayName": "score_promedio",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "execution_ids_distintos",
+              "displayName": "execution_ids_distintos",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "nuevos_activos_hoy",
+              "displayName": "nuevos_activos_hoy",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "generado_at",
+              "displayName": "generado_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
           "attemptToConvertTypes": false,
           "convertFieldsToString": false
         },
@@ -82,8 +281,16 @@
       "name": "Append Metricas_diarias",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.7,
-      "position": [720, 0],
-      "notes": "Credential: Google Sheets OAuth2 · crear pestaña Metricas_diarias con headers en fila 1"
+      "position": [
+        720,
+        0
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "keQl0Xe7WgYyM3x6",
+          "name": "Google Sheets account"
+        }
+      }
     },
     {
       "parameters": {
@@ -99,26 +306,31 @@
       "name": "Leer Descartados (Data Table)",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
-      "position": [960, 0],
-      "alwaysOutputData": true,
-      "notes": "Data Table en n8n con nombre: communitylab_descartados"
+      "position": [
+        960,
+        0
+      ],
+      "alwaysOutputData": true
     },
     {
       "parameters": {
-        "jsCode": "// WF3 — Snapshot de descartes por motivo (acumulado + del día)\nconst items = $input.all();\nconst rows = items\n  .map(i => i.json)\n  .filter(r => r && (r.motivo_descarte || r.estado || r.interaction_id || r.execution_id));\n\nconst hoy = new Date().toISOString().slice(0, 10);\n\nconst contadores = {\n  total_descartes: rows.length,\n  tipo_no_elegible: 0,\n  sentimiento_no_positivo: 0,\n  score_bajo: 0,\n  error_analisis: 0,\n  fallo_generacion: 0,\n  otro: 0\n};\nlet descartesHoy = 0;\n\nfor (const r of rows) {\n  const m = String(r.motivo_descarte || \"\").toLowerCase().trim();\n  const estado = String(r.estado || \"\").toLowerCase().trim();\n\n  if (m === \"tipo_no_elegible\") contadores.tipo_no_elegible++;\n  else if (m === \"sentimiento_no_positivo\") contadores.sentimiento_no_positivo++;\n  else if (m === \"score_bajo\") contadores.score_bajo++;\n  else if (m === \"error_analisis\") contadores.error_analisis++;\n  else if (\n    m === \"error_generacion\" ||\n    estado === \"descartado_por_generacion\" ||\n    m.includes(\"linkedin_sin\") ||\n    m.includes(\"faq_sin\") ||\n    m.includes(\"newsletter_sin\")\n  ) {\n    contadores.fallo_generacion++;\n  } else if (rows.length > 0) {\n    contadores.otro++;\n  }\n\n  const creado = String(r.createdAt || r.timestamp || \"\");\n  if (creado.startsWith(hoy)) descartesHoy++;\n}\n\nreturn [{\n  json: {\n    fecha: hoy,\n    ...contadores,\n    descartes_hoy: descartesHoy,\n    generado_at: new Date().toISOString()\n  }\n}];"
+        "jsCode": "// WF3 v1.2 — Snapshot de descartes por motivo (acumulado + del día)\nconst items = $input.all();\nconst rows = items\n  .map(i => i.json)\n  .filter(r => r && (r.motivo_descarte || r.estado || r.interaction_id || r.execution_id));\n\nconst hoy = new Date().toISOString().slice(0, 10);\n\nconst contadores = {\n  total_descartes: rows.length,\n  tipo_no_elegible: 0,\n  sentimiento_no_positivo: 0,\n  score_bajo: 0,\n  error_analisis: 0,\n  fallo_generacion: 0,\n  otro: 0\n};\nlet descartesHoy = 0;\n\nfor (const r of rows) {\n  const m = String(r.motivo_descarte || \"\").toLowerCase().trim();\n  const estado = String(r.estado || \"\").toLowerCase().trim();\n\n  if (m === \"tipo_no_elegible\") contadores.tipo_no_elegible++;\n  else if (m === \"sentimiento_no_positivo\") contadores.sentimiento_no_positivo++;\n  else if (m === \"score_bajo\") contadores.score_bajo++;\n  else if (m === \"error_analisis\") contadores.error_analisis++;\n  else if (\n    m === \"error_generacion\" ||\n    estado === \"descartado_por_generacion\" ||\n    m.includes(\"linkedin_sin\") ||\n    m.includes(\"faq_sin\") ||\n    m.includes(\"newsletter_sin\")\n  ) {\n    contadores.fallo_generacion++;\n  } else if (rows.length > 0) {\n    contadores.otro++;\n  }\n\n  const creado = String(r.createdAt || r.timestamp || \"\");\n  if (creado.startsWith(hoy)) descartesHoy++;\n}\n\nreturn [{\n  json: {\n    fecha: hoy,\n    ...contadores,\n    descartes_hoy: descartesHoy,\n    generado_at: new Date().toISOString()\n  }\n}];"
       },
       "id": "5cc3177e-ab30-46b0-b3a3-17e60d6e4b24",
       "name": "Agregar totales Descartados",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [1200, 0]
+      "position": [
+        1200,
+        0
+      ]
     },
     {
       "parameters": {
         "operation": "append",
         "documentId": {
           "__rl": true,
-          "value": "COLOCA_AQUI_EL_ID_DE_TU_GOOGLE_SHEET",
+          "value": "1nY40IJ4ludaHQcTEV8nDlHNi6ikl-4x5CUJocvrsHfk",
           "mode": "id"
         },
         "sheetName": {
@@ -130,7 +342,108 @@
           "mappingMode": "autoMapInputData",
           "value": {},
           "matchingColumns": [],
-          "schema": [],
+          "schema": [
+            {
+              "id": "fecha",
+              "displayName": "fecha",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "total_descartes",
+              "displayName": "total_descartes",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "tipo_no_elegible",
+              "displayName": "tipo_no_elegible",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "sentimiento_no_positivo",
+              "displayName": "sentimiento_no_positivo",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "score_bajo",
+              "displayName": "score_bajo",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "error_analisis",
+              "displayName": "error_analisis",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "fallo_generacion",
+              "displayName": "fallo_generacion",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "otro",
+              "displayName": "otro",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "descartes_hoy",
+              "displayName": "descartes_hoy",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "generado_at",
+              "displayName": "generado_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
           "attemptToConvertTypes": false,
           "convertFieldsToString": false
         },
@@ -140,39 +453,108 @@
       "name": "Append Metricas_descartes_diarias",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.7,
-      "position": [1440, 0],
-      "notes": "Credential: Google Sheets OAuth2 · crear pestaña Metricas_descartes_diarias"
+      "position": [
+        1440,
+        0
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "keQl0Xe7WgYyM3x6",
+          "name": "Google Sheets account"
+        }
+      }
     }
   ],
+  "pinData": {},
   "connections": {
     "Schedule Trigger (diario)": {
-      "main": [[{ "node": "Leer Curaduría (Sheets)", "type": "main", "index": 0 }]]
+      "main": [
+        [
+          {
+            "node": "Leer Curaduría (Sheets)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     },
     "Manual Trigger": {
-      "main": [[{ "node": "Leer Curaduría (Sheets)", "type": "main", "index": 0 }]]
+      "main": [
+        [
+          {
+            "node": "Leer Curaduría (Sheets)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     },
     "Leer Curaduría (Sheets)": {
-      "main": [[{ "node": "Agregar totales Curaduría", "type": "main", "index": 0 }]]
+      "main": [
+        [
+          {
+            "node": "Agregar totales Curaduría",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     },
     "Agregar totales Curaduría": {
-      "main": [[{ "node": "Append Metricas_diarias", "type": "main", "index": 0 }]]
+      "main": [
+        [
+          {
+            "node": "Append Metricas_diarias",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     },
     "Append Metricas_diarias": {
-      "main": [[{ "node": "Leer Descartados (Data Table)", "type": "main", "index": 0 }]]
+      "main": [
+        [
+          {
+            "node": "Leer Descartados (Data Table)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     },
     "Leer Descartados (Data Table)": {
-      "main": [[{ "node": "Agregar totales Descartados", "type": "main", "index": 0 }]]
+      "main": [
+        [
+          {
+            "node": "Agregar totales Descartados",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     },
     "Agregar totales Descartados": {
-      "main": [[{ "node": "Append Metricas_descartes_diarias", "type": "main", "index": 0 }]]
+      "main": [
+        [
+          {
+            "node": "Append Metricas_descartes_diarias",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
+  "active": true,
   "settings": {
-    "executionOrder": "v1"
+    "executionOrder": "v1",
+    "binaryMode": "separate"
   },
-  "staticData": null,
-  "pinData": {},
+  "versionId": "c6d9fe98-178e-488a-9bc3-d29f7f0a63da",
   "meta": {
-    "templateCredsSetupCompleted": false
-  }
+    "instanceId": "f1efd68212395172df6e0c0afcba127e4ff99d9ad4ddef083c90039c82106c77"
+  },
+  "nodeGroups": [],
+  "id": "inLCuhbiqbrsL5Fq",
+  "tags": []
 }

@@ -36,14 +36,14 @@
         <li class="nav-item active" id="nav-curaduria">
           <button data-tab="curaduria">🛡️ Curaduría en Vivo</button>
         </li>
+        <li class="nav-item" id="nav-powerbi">
+          <button data-tab="powerbi">📊 Dashboard Power BI</button>
+        </li>
         <li class="nav-item" id="nav-simulador">
           <button data-tab="simulador">⚡ Simulador de IA</button>
         </li>
         <li class="nav-item" id="nav-arquitectura">
           <button data-tab="arquitectura">🏛️ Arquitectura & n8n</button>
-        </li>
-        <li class="nav-item" id="nav-metricas">
-          <button data-tab="metricas">📊 Métricas OCI</button>
         </li>
         <li class="nav-item" id="nav-matriz">
           <button data-tab="matriz">📜 Matriz ONE</button>
@@ -87,10 +87,25 @@
       </div>
 
       <div class="hero-pills-row">
-        <span class="tech-tag oci">☁️ OCI Object Storage Always Free</span>
-        <span class="tech-tag groq">⚡ Groq LLM Llama 3.3 (JSON estricto)</span>
-        <span class="tech-tag n8n">🤖 n8n Workflow Automation (14 Nodos)</span>
-        <span class="tech-tag">📊 Google Sheets Live Sync</span>
+        <span class="tech-tag oci">☁️ OCI Object Storage Always Free (PAR)</span>
+        <span class="tech-tag groq">⚡ Groq LLM (openai/gpt-oss-120b, JSON estricto)</span>
+        <span class="tech-tag n8n">🤖 Pipeline n8n Modular (WF1 + WF2 + WF3)</span>
+        <span class="tech-tag">📊 Google Sheets Live Sync (gspread)</span>
+      </div>
+
+      <div style="display:flex; gap:0.75rem; flex-wrap:wrap; margin-top:1.25rem;">
+        <button class="btn-primary" data-tab-switch="curaduria" style="cursor:pointer; padding:0.65rem 1.35rem; font-size:0.9rem;">
+          <span>🛡️ Estación de Curaduría (HITL)</span>
+        </button>
+        <button class="btn-primary" data-tab-switch="powerbi" data-pbi-target="page1" style="cursor:pointer; background:linear-gradient(135deg, #0284c7, #0369a1); border-color:#38bdf8; padding:0.65rem 1.35rem; font-size:0.9rem;">
+          <span>📊 Dashboard Power BI (Pág. 1)</span>
+        </button>
+        <button class="btn-primary" data-tab-switch="powerbi" data-pbi-target="page2" style="cursor:pointer; background:linear-gradient(135deg, #0891b2, #0e7490); border-color:#22d3ee; padding:0.65rem 1.35rem; font-size:0.9rem;">
+          <span>🔍 Auditoría Descartes (Pág. 2)</span>
+        </button>
+        <button class="btn-primary" data-tab-switch="powerbi" data-pbi-target="embed" style="cursor:pointer; background:linear-gradient(135deg, #b91c1c, #991b1b); border-color:#f87171; padding:0.65rem 1.35rem; font-size:0.9rem;">
+          <span>🖥️ Streamlit Integrado</span>
+        </button>
       </div>
     </div>
 
@@ -98,8 +113,8 @@
       <img src="assets/communitylab_hero.jpg" alt="CommunityLab Enterprise Dashboard y Arquitectura Cloud" class="hero-banner-img">
       <div class="hero-stats-overlay">
         <div class="stat-item">
-          <span class="stat-num cyan">4</span>
-          <span class="stat-label">Casos Muestra</span>
+          <span class="stat-num cyan">77</span>
+          <span class="stat-label">Activos Generados</span>
         </div>
         <div class="stat-item">
           <span class="stat-num amber">3</span>
@@ -110,8 +125,8 @@
           <span class="stat-label">Curación Humana</span>
         </div>
         <div class="stat-item">
-          <span class="stat-num red">Always Free</span>
-          <span class="stat-label">Bucket OCI Cloud</span>
+          <span class="stat-num red">Power BI</span>
+          <span class="stat-label">Reporte Integrado</span>
         </div>
       </div>
     </div>
@@ -133,6 +148,27 @@
       </div>
 
       <div class="glass-card">
+        <!-- Power BI Sync Banner inside Curaduria -->
+        <div style="background:linear-gradient(135deg, rgba(2, 132, 199, 0.15), rgba(15, 23, 42, 0.6)); border:1px solid rgba(56, 189, 248, 0.3); border-radius:12px; padding:0.85rem 1.25rem; margin-bottom:1.25rem; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.75rem;">
+          <div style="display:flex; align-items:center; gap:0.75rem;">
+            <span style="font-size:1.4rem;">📊</span>
+            <div>
+              <span style="font-size:0.85rem; color:#e2e8f0; font-weight:600;">Ecosistema Integrado con Power BI:</span>
+              <span style="font-size:0.8rem; color:var(--text-muted); margin-left:4px;">Las decisiones de curaduría tomadas aquí se sincronizan con Google Sheets y alimentan en tiempo real el Embudo y la Auditoría de Descartes.</span>
+            </div>
+          </div>
+          <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+            <button data-tab-switch="powerbi" data-pbi-target="page1" class="btn-icon-link" style="padding:0.4rem 0.9rem; font-size:0.8rem; background:rgba(0, 240, 255, 0.1); border-color:rgba(0, 240, 255, 0.3); color:var(--cyan); cursor:pointer;">
+              <span>📊 Embudo (Pág. 1) ➔</span>
+            </button>
+            <button data-tab-switch="powerbi" data-pbi-target="page2" class="btn-icon-link" style="padding:0.4rem 0.9rem; font-size:0.8rem; background:rgba(255, 153, 0, 0.1); border-color:rgba(255, 153, 0, 0.3); color:var(--amber); cursor:pointer;">
+              <span>🔍 Auditoría Descartes (Pág. 2) ➔</span>
+            </button>
+            <button data-tab-switch="powerbi" data-pbi-target="embed" class="btn-icon-link" style="padding:0.4rem 0.9rem; font-size:0.8rem; background:rgba(255, 75, 75, 0.15); border-color:rgba(255, 75, 75, 0.4); color:#ff6b6b; cursor:pointer;">
+              <span>🖥️ Streamlit en Vivo ➔</span>
+            </button>
+          </div>
+        </div>
         <!-- Station Toolbar -->
         <div class="station-toolbar">
           <div class="station-meta">
@@ -329,7 +365,7 @@
         <div class="section-title-wrap">
           <span class="section-badge">Motor Semántico Groq</span>
           <h2 class="section-title">Simulador Interactivo de Ingesta & Análisis</h2>
-          <p class="section-desc">Experimenta cómo el pipeline de n8n procesa mensajes en tiempo real: extrae sentimiento con Groq LLM, aplica scoring determinístico y bifurca al formato de marketing adecuado.</p>
+          <p class="section-desc">Experimenta cómo el pipeline de n8n procesa mensajes: extrae sentimiento con Groq LLM (<code>openai/gpt-oss-120b</code>), aplica la fórmula oficial <code>score_final = 0.75 × score_llm + 0.25 × peso_tipo</code> y bifurca al formato de marketing adecuado.</p>
         </div>
       </div>
 
@@ -407,7 +443,7 @@
             <!-- Node 1: Ingesta -->
             <rect x="20" y="70" width="160" height="90" rx="12" fill="url(#grad-blue)" stroke="#38bdf8" stroke-width="1.5"/>
             <text x="100" y="105" fill="#fff" font-size="13" font-weight="bold" text-anchor="middle">1. Ingesta</text>
-            <text x="100" y="125" fill="#bae6fd" font-size="10" text-anchor="middle">Webhook / Discord / JSON</text>
+            <text x="100" y="125" fill="#bae6fd" font-size="10" text-anchor="middle">Webhook / JSON Comunidad</text>
             <text x="100" y="140" fill="#bae6fd" font-size="9" text-anchor="middle">CL-YYYYMMDD-XXX</text>
 
             <path d="M 180 115 L 230 115" stroke="#38bdf8" stroke-width="2" marker-end="url(#arrow)"/>
@@ -415,24 +451,24 @@
             <!-- Node 2: Groq Semántica -->
             <rect x="230" y="70" width="170" height="90" rx="12" fill="url(#grad-amber)" stroke="#fb923c" stroke-width="1.5"/>
             <text x="315" y="105" fill="#fff" font-size="13" font-weight="bold" text-anchor="middle">2. Groq LLM</text>
-            <text x="315" y="125" fill="#fed7aa" font-size="10" text-anchor="middle">Llama 3.3 · Análisis Semántico</text>
-            <text x="315" y="140" fill="#fed7aa" font-size="9" text-anchor="middle">Scoring Determinístico</text>
+            <text x="315" y="125" fill="#fed7aa" font-size="10" text-anchor="middle">openai/gpt-oss-120b</text>
+            <text x="315" y="140" fill="#fed7aa" font-size="9" text-anchor="middle">Scoring Ponderado Oficial</text>
 
             <path d="M 400 115 L 450 115" stroke="#fb923c" stroke-width="2"/>
 
             <!-- Node 3: Switch Bifurcación -->
             <rect x="450" y="70" width="160" height="90" rx="12" fill="url(#grad-purple)" stroke="#c084fc" stroke-width="1.5"/>
             <text x="530" y="105" fill="#fff" font-size="13" font-weight="bold" text-anchor="middle">3. Bifurcación</text>
-            <text x="530" y="125" fill="#f3e8ff" font-size="10" text-anchor="middle">Switch: Score >= 6.0</text>
+            <text x="530" y="125" fill="#f3e8ff" font-size="10" text-anchor="middle">Elegible + Score >= 6.0</text>
             <text x="530" y="140" fill="#f3e8ff" font-size="9" text-anchor="middle">LinkedIn · FAQ · Newsletter</text>
 
             <path d="M 610 115 L 660 115" stroke="#c084fc" stroke-width="2"/>
 
             <!-- Node 4: Curaduría Humana -->
             <rect x="660" y="70" width="170" height="90" rx="12" fill="url(#grad-green)" stroke="#34d399" stroke-width="1.5"/>
-            <text x="745" y="105" fill="#fff" font-size="13" font-weight="bold" text-anchor="middle">4. Curaduría Humana</text>
-            <text x="745" y="125" fill="#a7f3d0" font-size="10" text-anchor="middle">Google Sheets + Web Panel</text>
-            <text x="745" y="140" fill="#a7f3d0" font-size="9" text-anchor="middle">Human-in-the-Loop</text>
+            <text x="745" y="105" fill="#fff" font-size="13" font-weight="bold" text-anchor="middle">4. Curaduría (HITL)</text>
+            <text x="745" y="125" fill="#a7f3d0" font-size="10" text-anchor="middle">Google Sheets + Streamlit</text>
+            <text x="745" y="140" fill="#a7f3d0" font-size="9" text-anchor="middle">Aprobación / Rechazo / Copys</text>
 
             <path d="M 830 115 L 880 115" stroke="#34d399" stroke-width="2"/>
 
@@ -440,7 +476,7 @@
             <rect x="880" y="70" width="190" height="90" rx="12" fill="url(#grad-red)" stroke="#f87171" stroke-width="1.5"/>
             <text x="975" y="105" fill="#fff" font-size="13" font-weight="bold" text-anchor="middle">5. Oracle Cloud (OCI)</text>
             <text x="975" y="125" fill="#fecaca" font-size="10" text-anchor="middle">Object Storage Always Free</text>
-            <text x="975" y="140" fill="#fecaca" font-size="9" text-anchor="middle">activos/Semana_04/...json</text>
+            <text x="975" y="140" fill="#fecaca" font-size="9" text-anchor="middle">PAR PUT activos/aprobados/...</text>
           </svg>
         </div>
       </div>
@@ -449,177 +485,522 @@
       <div class="workflows-grid">
         <!-- WF1 Card -->
         <article class="wf-card">
-          <span class="wf-tag wf1">WF1 · Core Ingesta</span>
-          <h3 style="font-size:1.1rem; color:#fff;">WF1: Ingesta, Análisis y Generación</h3>
+          <span class="wf-tag wf1">WF1 · Core Ingesta v1.8</span>
+          <h3 style="font-size:1.1rem; color:#fff;">WF1: Ingesta, Validación y Generación</h3>
           <p style="font-size:0.85rem; color:var(--text-muted);">
-            Procesa interacciones entrantes, ejecuta la inferencia en Groq con LLaMA 3.3, calcula el scoring determinístico y bifurca en 3 ramas de generación especializada hacia Google Sheets.
+            Procesa interacciones comunitarias, valida esquemas JSON, ejecuta inferencia semántica con Groq LPU (<code>openai/gpt-oss-120b</code>), calcula <code>score_final = 0.75 × score_llm + 0.25 × peso_tipo</code> y bifurca hacia Google Sheets.
           </p>
           <ul class="wf-meta-list">
-            <li><strong>Nodos:</strong> 14 nodos n8n</li>
-            <li><strong>Disparador:</strong> Webhook HTTP / Manual Trigger</li>
-            <li><strong>Modelos:</strong> Groq Llama 3 (JSON estricto)</li>
-            <li><strong>Salida:</strong> Google Sheets (pendiente_curaduria)</li>
+            <li><strong>Nodos:</strong> 24 nodos n8n</li>
+            <li><strong>Disparador:</strong> Webhook JSON / Manual Trigger</li>
+            <li><strong>Modelos:</strong> Groq API (openai/gpt-oss-120b, JSON estricto)</li>
+            <li><strong>Salida:</strong> Google Sheets (Curaduria: pendiente)</li>
           </ul>
           <a href="communitylab/workflows/WF1-ingesta-analisis-generacion.json" download class="btn-icon-link" style="margin-top:auto; justify-content:center;">
-            <span>📥 Descargar WF1 JSON</span>
+            <span>📥 Descargar WF1 JSON (v1.8)</span>
           </a>
         </article>
 
         <!-- WF2 Card -->
         <article class="wf-card">
-          <span class="wf-tag wf2">WF2 · Persistencia OCI</span>
+          <span class="wf-tag wf2">WF2 · Persistencia OCI v1.4</span>
           <h3 style="font-size:1.1rem; color:#fff;">WF2: Curaduría hacia OCI Object Storage</h3>
           <p style="font-size:0.85rem; color:var(--text-muted);">
-            Sondea periódicamente las filas en estado <code>decision = aprobado</code> y realiza la subida de los archivos JSON mediante API REST de OCI Object Storage Always Free.
+            Monitorea el Sheet y, solo cuando <code>decision = aprobado</code> y está sin procesar, emite una solicitud PUT HTTP autenticada vía <strong>Pre-Authenticated Request (PAR)</strong> al bucket en Oracle Cloud.
           </p>
           <ul class="wf-meta-list">
-            <li><strong>Nodos:</strong> 10 nodos n8n</li>
-            <li><strong>Disparador:</strong> Intervalo cada 15 min</li>
-            <li><strong>Autenticación:</strong> OCI Request Signing (IAM)</li>
-            <li><strong>Convención:</strong> <code>activos/{periodo}/{id}.json</code></li>
+            <li><strong>Nodos:</strong> 14 nodos n8n</li>
+            <li><strong>Disparador:</strong> Polling periódico / Disparo asistido</li>
+            <li><strong>Autenticación:</strong> Pre-Authenticated Request (PAR) + HTTP PUT</li>
+            <li><strong>Ruta Objeto:</strong> <code>activos/aprobados/{execution_id}/{asset_id}.json</code></li>
           </ul>
           <a href="communitylab/workflows/WF2-curaduria-oci.json" download class="btn-icon-link" style="margin-top:auto; justify-content:center;">
-            <span>📥 Descargar WF2 JSON</span>
+            <span>📥 Descargar WF2 JSON (v1.4)</span>
           </a>
         </article>
 
         <!-- WF3 Card -->
         <article class="wf-card">
-          <span class="wf-tag wf3">WF3 · Observabilidad</span>
-          <h3 style="font-size:1.1rem; color:#fff;">WF3: Métricas y Observabilidad Diaria</h3>
+          <span class="wf-tag wf3">WF3 · Observabilidad v1.2</span>
+          <h3 style="font-size:1.1rem; color:#fff;">WF3: Métricas Diarias & Auditoría Descartes</h3>
           <p style="font-size:0.85rem; color:var(--text-muted);">
-            Cron diario que consolida el total de interacciones recibidas, calcula tasas de aprobación de curadores y distribuye el informe de salud del ecosistema comunitario.
+            Cron diario que consolida el total de activos, tasa de aprobación humana, reconciliación con OCI y desglose clasificado de descartes auditados hacia las pestañas de Power BI.
           </p>
           <ul class="wf-meta-list">
             <li><strong>Nodos:</strong> 8 nodos n8n</li>
             <li><strong>Disparador:</strong> Cron 00:00 UTC Diario</li>
-            <li><strong>KPIs:</strong> Tasa aprobación, sentimiento, canales</li>
-            <li><strong>Salida:</strong> Reporte consolidado n8n / Sheets</li>
+            <li><strong>Pestañas Sheet:</strong> <code>Metricas_diarias</code> & <code>Metricas_descartes_diarias</code></li>
+            <li><strong>Consumo:</strong> Power BI Desktop (DAX: MAX fecha)</li>
           </ul>
           <a href="communitylab/workflows/WF3-metricas-diarias.json" download class="btn-icon-link" style="margin-top:auto; justify-content:center;">
-            <span>📥 Descargar WF3 JSON</span>
+            <span>📥 Descargar WF3 JSON (v1.2)</span>
           </a>
         </article>
       </div>
     </section>
 
     <!-- ====================================================================
-         TAB 4: MÉTRICAS Y OBSERVABILIDAD (WF3)
+         TAB 4: MÉTRICAS, PERSISTENCIA OCI & POWER BI (WF3)
          ==================================================================== -->
-    <section class="tab-content" id="tab-metricas">
+    <section class="tab-content" id="tab-powerbi">
       <div class="section-header">
         <div class="section-title-wrap">
-          <span class="section-badge">Observabilidad en Tiempo Real</span>
-          <h2 class="section-title">Métricas de Rendimiento & Persistencia OCI</h2>
-          <p class="section-desc">Consolidación de las interacciones procesadas, tiempo de respuesta en inferencia y ratio de aprobación humana.</p>
+          <span class="section-badge">Observabilidad & Power BI Desktop Integrado</span>
+          <h2 class="section-title">Dashboard Analítico & Auditoría de Descartes</h2>
+          <p class="section-desc">Adaptación integral del reporte oficial <code>CommunityLab_Dashboard.pbix</code> y la consola Streamlit Cloud, sincronizados en tiempo real con Google Sheets (WF3) y persistencia en Oracle Cloud.</p>
         </div>
       </div>
 
-      <!-- Big Metric Cards -->
-      <div class="metrics-overview-grid">
-        <div class="metric-stat-card">
-          <div class="metric-icon-wrap" style="background:rgba(0,240,255,0.1); color:var(--cyan);">📥</div>
-          <span class="stat-label">Total Interacciones</span>
-          <div class="metric-big-num" id="metric-total-interactions">48</div>
-          <span class="metric-sub">100% normalizadas con contrato</span>
-        </div>
-
-        <div class="metric-stat-card">
-          <div class="metric-icon-wrap" style="background:rgba(255,153,0,0.1); color:var(--amber);">⚡</div>
-          <span class="stat-label">Score Promedio de Calidad</span>
-          <div class="metric-big-num" id="metric-avg-score">7.8 / 10</div>
-          <span class="metric-sub">Scoring determinístico ponderado</span>
-        </div>
-
-        <div class="metric-stat-card">
-          <div class="metric-icon-wrap" style="background:rgba(16,185,129,0.1); color:var(--emerald);">🛡️</div>
-          <span class="stat-label">Tasa de Aprobación</span>
-          <div class="metric-big-num">86.4%</div>
-          <span class="metric-sub">Curación humana obligatoria</span>
-        </div>
-
-        <div class="metric-stat-card">
-          <div class="metric-icon-wrap" style="background:rgba(248,0,0,0.1); color:#ff6b6b;">☁️</div>
-          <span class="stat-label">Activos en OCI Bucket</span>
-          <div class="metric-big-num" id="metric-total-oci">36</div>
-          <span class="metric-sub">Tier Always Free Object Storage</span>
-        </div>
+      <!-- Power BI Sub-views Navigation -->
+      <div class="pbi-subnav-bar">
+        <button class="pbi-subtab-btn active" id="btn-pbi-sub-page1" data-pbi-sub="page1">
+          <span>📊 Página 1: Resumen del Pipeline & Embudo</span>
+        </button>
+        <button class="pbi-subtab-btn" id="btn-pbi-sub-page2" data-pbi-sub="page2">
+          <span>🔍 Página 2: Auditoría de Descartes (71)</span>
+        </button>
+        <button class="pbi-subtab-btn" id="btn-pbi-sub-embed" data-pbi-sub="embed">
+          <span>🖥️ Consola Streamlit en Vivo (HITL Embebido)</span>
+        </button>
       </div>
 
-      <!-- Charts & Breakdowns Row -->
-      <div class="charts-row">
-        <!-- Breakdown 1: Sentimiento -->
-        <div class="chart-card">
-          <h3 style="font-size:1.05rem;">Distribución de Sentimiento Comunitario</h3>
-          <div class="bar-breakdown-row">
-            <div class="breakdown-item">
-              <div class="breakdown-label-row">
-                <span>Muy Positivo (Testimonios y Logros)</span>
-                <strong style="color:var(--emerald);">68%</strong>
-              </div>
-              <div class="breakdown-bar">
-                <div class="breakdown-fill" style="width:68%; background:var(--emerald);"></div>
-              </div>
-            </div>
-
-            <div class="breakdown-item">
-              <div class="breakdown-label-row">
-                <span>Neutro (Preguntas Técnicas y Dudas)</span>
-                <strong style="color:var(--cyan);">24%</strong>
-              </div>
-              <div class="breakdown-bar">
-                <div class="breakdown-fill" style="width:24%; background:var(--cyan);"></div>
-              </div>
-            </div>
-
-            <div class="breakdown-item">
-              <div class="breakdown-label-row">
-                <span>Negativo / Frustración (Feedback UI)</span>
-                <strong style="color:var(--amber);">8%</strong>
-              </div>
-              <div class="breakdown-bar">
-                <div class="breakdown-fill" style="width:8%; background:var(--amber);"></div>
+      <!-- ==================================================================
+           SUB-PAGE 1: RESUMEN DEL PIPELINE & EMBUDO (POWER BI - PÁGINA 1)
+           ================================================================== -->
+      <div class="pbi-subpage active" id="pbi-subpage-page1">
+        
+        <!-- Status Banner -->
+        <div class="pbi-banner-card" style="background:linear-gradient(135deg, rgba(30,41,59,0.85), rgba(15,23,42,0.95)); border:1px solid rgba(255,255,255,0.12); border-radius:14px; padding:1.25rem 1.75rem; margin-bottom:1.5rem; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
+          <div style="display:flex; align-items:center; gap:0.85rem;">
+            <span style="font-size:1.8rem;">📊</span>
+            <div>
+              <div style="font-weight:700; color:#fff; font-size:1.05rem;">Resumen del Pipeline (Power BI — Página 1)</div>
+              <div style="font-size:0.85rem; color:var(--text-muted);">
+                Sincronización en vivo con <code>Metricas_diarias</code> (WF3) · Regla DAX: <strong>MAX(fecha) = 2026-10-22</strong>
               </div>
             </div>
           </div>
+          <div style="display:flex; gap:0.75rem; flex-wrap:wrap; align-items:center;">
+            <span class="badge-status-ok" style="background:rgba(16,185,129,0.15); border:1px solid rgba(16,185,129,0.4); color:#34d399; font-weight:600; padding:6px 14px; border-radius:20px;">
+              ✔ Reconciliación OCI: 13 Aprobados = 13 Oracle (100%)
+            </span>
+            <button class="btn-icon-link" data-pbi-sub="page2" style="background:rgba(56, 189, 248, 0.15); border-color:rgba(56, 189, 248, 0.4); color:#38bdf8; cursor:pointer;">
+              <span>🔍 Ver Descartes (Pág. 2) ➔</span>
+            </button>
+          </div>
         </div>
 
-        <!-- Breakdown 2: Canales y Formatos -->
-        <div class="chart-card">
-          <h3 style="font-size:1.05rem;">Formatos Generados vs. Publicados</h3>
-          <div class="bar-breakdown-row">
-            <div class="breakdown-item">
-              <div class="breakdown-label-row">
-                <span>Posts para LinkedIn</span>
-                <strong>42%</strong>
-              </div>
-              <div class="breakdown-bar">
-                <div class="breakdown-fill" style="width:42%; background:#0a66c2;"></div>
-              </div>
+        <!-- Big Metric Cards (Página 1 DAX) -->
+        <div class="metrics-overview-grid" style="grid-template-columns:repeat(auto-fit, minmax(180px, 1fr));">
+          <div class="metric-stat-card">
+            <div class="metric-icon-wrap" style="background:rgba(0,240,255,0.1); color:var(--cyan);">📥</div>
+            <span class="stat-label">Total Activos Generados</span>
+            <div class="metric-big-num" id="metric-total-interactions">77</div>
+            <span class="metric-sub">100% normalizados desde n8n</span>
+          </div>
+
+          <div class="metric-stat-card">
+            <div class="metric-icon-wrap" style="background:rgba(255,153,0,0.1); color:var(--amber);">⚡</div>
+            <span class="stat-label">Score Promedio Calidad</span>
+            <div class="metric-big-num" id="metric-avg-score">7.18 / 10</div>
+            <span class="metric-sub">Fórmula: 0.75×LLM + 0.25×Tipo</span>
+          </div>
+
+          <div class="metric-stat-card">
+            <div class="metric-icon-wrap" style="background:rgba(16,185,129,0.1); color:var(--emerald);">🛡️</div>
+            <span class="stat-label">Tasa de Aprobación Humana</span>
+            <div class="metric-big-num" id="metric-approval-rate">36.1%</div>
+            <span class="metric-sub">13 aprobados / 36 curados</span>
+          </div>
+
+          <div class="metric-stat-card">
+            <div class="metric-icon-wrap" style="background:rgba(248,0,0,0.1); color:#ff6b6b;">☁️</div>
+            <span class="stat-label">Activos en Oracle OCI</span>
+            <div class="metric-big-num" id="metric-total-oci">13</div>
+            <span class="metric-sub">Reconciliación: ✔ Aprobados = Oracle</span>
+          </div>
+
+          <div class="metric-stat-card">
+            <div class="metric-icon-wrap" style="background:rgba(148,163,184,0.1); color:var(--text-muted);">🔍</div>
+            <span class="stat-label">Descartes Auditados</span>
+            <div class="metric-big-num" id="metric-total-descartes">71</div>
+            <span class="metric-sub">Filtro de calidad & elegibilidad</span>
+          </div>
+        </div>
+
+        <!-- Charts Row: Embudo + Anillo de Formatos -->
+        <div class="charts-row" style="margin-top:1.5rem; display:grid; grid-template-columns:1.5fr 1fr; gap:1.25rem;">
+          
+          <!-- Funnel Visual -->
+          <div class="chart-card">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+              <h3 style="font-size:1.05rem; color:#fff; display:flex; align-items:center; gap:0.5rem;">
+                <span>🎯</span>
+                <span>Embudo del Pipeline (DAX Funnel Visual)</span>
+              </h3>
+              <span style="font-size:0.75rem; color:var(--text-dim); background:rgba(255,255,255,0.05); padding:2px 8px; border-radius:6px;">Power BI Pág. 1</span>
             </div>
 
-            <div class="breakdown-item">
-              <div class="breakdown-label-row">
-                <span>Guías Técnicas / FAQ Dinámico</span>
-                <strong>33%</strong>
+            <div class="funnel-container" style="display:flex; flex-direction:column; gap:0.75rem;">
+              <div class="funnel-step">
+                <div style="display:flex; justify-content:space-between; font-size:0.85rem; margin-bottom:4px;">
+                  <span style="color:#e2e8f0; font-weight:600;">1. Ingesta Total (Generados por IA)</span>
+                  <strong style="color:var(--cyan);">77 activos (100%)</strong>
+                </div>
+                <div style="background:rgba(255,255,255,0.06); height:24px; border-radius:6px; overflow:hidden;">
+                  <div style="width:100%; height:100%; background:linear-gradient(90deg, #00f0ff, #0284c7); border-radius:6px;"></div>
+                </div>
               </div>
-              <div class="breakdown-bar">
-                <div class="breakdown-fill" style="width:33%; background:var(--amber);"></div>
-              </div>
-            </div>
 
-            <div class="breakdown-item">
-              <div class="breakdown-label-row">
-                <span>Destacados para Newsletter</span>
-                <strong>25%</strong>
+              <div class="funnel-step">
+                <div style="display:flex; justify-content:space-between; font-size:0.85rem; margin-bottom:4px;">
+                  <span style="color:#e2e8f0; font-weight:600;">2. Curados por Humano (Aprobados + Rechazados)</span>
+                  <strong style="color:#60a5fa;">36 curados (46.8% de generados)</strong>
+                </div>
+                <div style="background:rgba(255,255,255,0.06); height:24px; border-radius:6px; overflow:hidden;">
+                  <div style="width:46.8%; height:100%; background:linear-gradient(90deg, #3b82f6, #2563eb); border-radius:6px;"></div>
+                </div>
               </div>
-              <div class="breakdown-bar">
-                <div class="breakdown-fill" style="width:25%; background:var(--emerald);"></div>
+
+              <div class="funnel-step">
+                <div style="display:flex; justify-content:space-between; font-size:0.85rem; margin-bottom:4px;">
+                  <span style="color:#e2e8f0; font-weight:600;">3. Aprobados por Curador</span>
+                  <strong style="color:var(--emerald);">13 aprobados (36.1% de curados)</strong>
+                </div>
+                <div style="background:rgba(255,255,255,0.06); height:24px; border-radius:6px; overflow:hidden;">
+                  <div style="width:36.1%; height:100%; background:linear-gradient(90deg, #10b981, #059669); border-radius:6px;"></div>
+                </div>
+              </div>
+
+              <div class="funnel-step">
+                <div style="display:flex; justify-content:space-between; font-size:0.85rem; margin-bottom:4px;">
+                  <span style="color:#e2e8f0; font-weight:600;">4. Persistidos en Oracle Cloud (OCI)</span>
+                  <strong style="color:#f87171;">13 en OCI (100% de aprobados ✔)</strong>
+                </div>
+                <div style="background:rgba(255,255,255,0.06); height:24px; border-radius:6px; overflow:hidden;">
+                  <div style="width:36.1%; height:100%; background:linear-gradient(90deg, #f80000, #dc2626); border-radius:6px;"></div>
+                </div>
               </div>
             </div>
           </div>
+
+          <!-- Format Breakdown Visual -->
+          <div class="chart-card">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+              <h3 style="font-size:1.05rem; color:#fff; display:flex; align-items:center; gap:0.5rem;">
+                <span>🍩</span>
+                <span>Distribución por Formato (Anillo)</span>
+              </h3>
+              <span style="font-size:0.75rem; color:var(--text-dim); background:rgba(255,255,255,0.05); padding:2px 8px; border-radius:6px;">Power BI Pág. 1</span>
+            </div>
+
+            <div class="bar-breakdown-row" style="display:flex; flex-direction:column; gap:0.9rem;">
+              <div class="breakdown-item">
+                <div class="breakdown-label-row">
+                  <span style="display:flex; align-items:center; gap:6px;">
+                    <span style="width:10px; height:10px; border-radius:50%; background:#0a66c2; display:inline-block;"></span>
+                    <span>Posts para LinkedIn</span>
+                  </span>
+                  <strong style="color:#38bdf8;">33 activos (42.9%)</strong>
+                </div>
+                <div class="breakdown-bar">
+                  <div class="breakdown-fill" style="width:42.9%; background:#0a66c2;"></div>
+                </div>
+              </div>
+
+              <div class="breakdown-item">
+                <div class="breakdown-label-row">
+                  <span style="display:flex; align-items:center; gap:6px;">
+                    <span style="width:10px; height:10px; border-radius:50%; background:var(--emerald); display:inline-block;"></span>
+                    <span>Guías Técnicas / FAQ Dinámico</span>
+                  </span>
+                  <strong style="color:var(--emerald);">22 activos (28.6%)</strong>
+                </div>
+                <div class="breakdown-bar">
+                  <div class="breakdown-fill" style="width:28.6%; background:var(--emerald);"></div>
+                </div>
+              </div>
+
+              <div class="breakdown-item">
+                <div class="breakdown-label-row">
+                  <span style="display:flex; align-items:center; gap:6px;">
+                    <span style="width:10px; height:10px; border-radius:50%; background:#e65100; display:inline-block;"></span>
+                    <span>Destacados para Newsletter</span>
+                  </span>
+                  <strong style="color:var(--amber);">22 activos (28.6%)</strong>
+                </div>
+                <div class="breakdown-bar">
+                  <div class="breakdown-fill" style="width:28.6%; background:#e65100;"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Historical Snapshot Table -->
+        <details class="pbi-accordion" style="margin-top:1.5rem;">
+          <summary>📈 Ver Serie Histórica Diaria de Métricas (10 Días — WF3)</summary>
+          <div class="pbi-accordion-content">
+            <table class="matrix-table" style="font-size:0.8rem;">
+              <thead>
+                <tr>
+                  <th>Fecha (DAX)</th>
+                  <th>Total Activos</th>
+                  <th>Aprobados</th>
+                  <th>Rechazados</th>
+                  <th>Pendientes</th>
+                  <th>Oracle OCI</th>
+                  <th>Tasa Aprob.</th>
+                  <th>Score Prom.</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>2026-10-22</td><td>77</td><td style="color:#34d399; font-weight:700;">13</td><td style="color:#f87171;">23</td><td>41</td><td style="color:#38bdf8; font-weight:700;">13</td><td>36.1%</td><td>7.18</td></tr>
+                <tr><td>2026-10-21</td><td>77</td><td>13</td><td>23</td><td>41</td><td>13</td><td>36.1%</td><td>7.18</td></tr>
+                <tr><td>2026-10-20</td><td>77</td><td>13</td><td>23</td><td>41</td><td>13</td><td>36.1%</td><td>7.18</td></tr>
+                <tr><td>2026-10-18</td><td>76</td><td>13</td><td>23</td><td>40</td><td>13</td><td>36.1%</td><td>7.18</td></tr>
+                <tr><td>2026-10-17</td><td>76</td><td>13</td><td>23</td><td>40</td><td>13</td><td>36.1%</td><td>7.18</td></tr>
+                <tr><td>2026-10-16</td><td>75</td><td>7</td><td>22</td><td>46</td><td>7</td><td>24.1%</td><td>7.18</td></tr>
+                <tr><td>2026-10-15</td><td>75</td><td>7</td><td>22</td><td>46</td><td>7</td><td>24.1%</td><td>7.18</td></tr>
+                <tr><td>2026-10-14</td><td>63</td><td>6</td><td>14</td><td>43</td><td>6</td><td>30.0%</td><td>7.17</td></tr>
+                <tr><td>2026-10-13</td><td>63</td><td>6</td><td>14</td><td>43</td><td>6</td><td>30.0%</td><td>7.17</td></tr>
+                <tr><td>2026-10-12</td><td>60</td><td>6</td><td>14</td><td>40</td><td>6</td><td>30.0%</td><td>7.17</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </details>
+
+      </div>
+
+      <!-- ==================================================================
+           SUB-PAGE 2: AUDITORÍA DE DESCARTES (POWER BI - PÁGINA 2)
+           ================================================================== -->
+      <div class="pbi-subpage" id="pbi-subpage-page2">
+        
+        <!-- Header Identical to Image 1 -->
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:1rem; margin-bottom:1.25rem;">
+          <div>
+            <h3 style="font-size:1.45rem; color:#f8fafc; display:flex; align-items:center; gap:0.5rem; margin-bottom:4px;">
+              <span>🔍</span>
+              <span>Auditoría de Descartes (Power BI — Página 2)</span>
+            </h3>
+            <p style="font-size:0.9rem; color:var(--text-muted); margin:0;">
+              Inspección de mensajes que no superaron los criterios de calidad o elegibilidad en WF1
+            </p>
+          </div>
+          <div style="display:flex; gap:0.5rem; align-items:center;">
+            <span class="status-pill" style="background:rgba(56, 189, 248, 0.15); border-color:rgba(56, 189, 248, 0.35); color:#38bdf8;">
+              ⚡ Regla DAX: MAX(fecha) = 2026-10-22
+            </span>
+          </div>
+        </div>
+
+        <!-- 3 KPI Cards Matching Image 1 (d1, d2, d3) -->
+        <div style="display:grid; grid-template-columns:1fr 1fr 2fr; gap:1.25rem; margin-bottom:1.5rem;">
+          
+          <!-- Card 1 -->
+          <div class="glass-card" style="padding:1.25rem 1.5rem;">
+            <span class="stat-label" style="font-size:0.8rem; color:var(--text-muted); font-weight:600;">Total Descartes Auditados</span>
+            <div style="font-size:2.4rem; font-weight:700; color:#f8fafc; font-family:var(--font-heading); margin-top:4px;">71</div>
+            <span style="font-size:0.75rem; color:var(--text-dim);">Consolidado en WF3</span>
+          </div>
+
+          <!-- Card 2 -->
+          <div class="glass-card" style="padding:1.25rem 1.5rem;">
+            <span class="stat-label" style="font-size:0.8rem; color:var(--text-muted); font-weight:600;">Descartes Hoy</span>
+            <div style="font-size:2.4rem; font-weight:700; color:#f8fafc; font-family:var(--font-heading); margin-top:4px;">0</div>
+            <span style="font-size:0.75rem; color:var(--text-dim);">Último ciclo n8n</span>
+          </div>
+
+          <!-- Card 3: Rule -->
+          <div class="glass-card" style="padding:1.25rem 1.5rem; display:flex; flex-direction:column; justify-content:center;">
+            <span style="font-size:0.78rem; color:var(--text-muted); font-weight:600; text-transform:uppercase; letter-spacing:0.04em;">Regla de Auditoría WF1 / WF3:</span>
+            <div style="font-size:0.85rem; color:#e2e8f0; margin-top:6px; line-height:1.5;">
+              <code>Elegible SÍ = tipo ∈ [testimonio, logro, pregunta_tecnica]</code> <strong>Y</strong> <code>sentimiento ∈ [positivo, muy_positivo]</code> <strong>Y</strong> <code>score_final ≥ 6.0</code>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Horizontal Bar Chart Box (Exact layout from Image 1) -->
+        <div class="descartes-chart-box">
+          <div class="descartes-chart-header">
+            <span>Distribución de Motivos al 2026-10-22 (DAX: Cantidad Último Día)</span>
+            <span style="font-size:0.75rem; color:var(--text-dim); background:rgba(255,255,255,0.05); padding:2px 8px; border-radius:6px;">Power BI Visual: BarChart-H</span>
+          </div>
+
+          <div class="descartes-chart-body">
+            
+            <!-- Row 1: Tipo no elegible (64) -->
+            <div class="descartes-bar-row">
+              <span class="descartes-bar-label">Tipo no elegible (tipo_no_elegible)</span>
+              <div class="descartes-bar-track">
+                <div class="descartes-bar-fill" style="width: 90.1%; background: #38bdf8;">64</div>
+              </div>
+              <span class="descartes-bar-count" style="color:#38bdf8;">64</span>
+            </div>
+
+            <!-- Row 2: Sentimiento no positivo (4) -->
+            <div class="descartes-bar-row">
+              <span class="descartes-bar-label">Sentimiento no positivo (sentimiento_no_positivo)</span>
+              <div class="descartes-bar-track">
+                <div class="descartes-bar-fill" style="width: 6.2%; background: #f59e0b; min-width:28px;">4</div>
+              </div>
+              <span class="descartes-bar-count" style="color:#f59e0b;">4</span>
+            </div>
+
+            <!-- Row 3: Fallo de generación (3) -->
+            <div class="descartes-bar-row">
+              <span class="descartes-bar-label">Fallo de generación (fallo_generacion)</span>
+              <div class="descartes-bar-track">
+                <div class="descartes-bar-fill" style="width: 4.8%; background: #ef4444; min-width:28px;">3</div>
+              </div>
+              <span class="descartes-bar-count" style="color:#ef4444;">3</span>
+            </div>
+
+            <!-- Row 4: Error de análisis LLM (0) -->
+            <div class="descartes-bar-row">
+              <span class="descartes-bar-label">Error de análisis LLM</span>
+              <div class="descartes-bar-track">
+                <div class="descartes-bar-fill" style="width: 0%; background: #64748b;"></div>
+              </div>
+              <span class="descartes-bar-count" style="color:var(--text-dim);">0</span>
+            </div>
+
+            <!-- Row 5: Score bajo (< 6.0) (0) -->
+            <div class="descartes-bar-row">
+              <span class="descartes-bar-label">Score bajo (&lt; 6.0)</span>
+              <div class="descartes-bar-track">
+                <div class="descartes-bar-fill" style="width: 0%; background: #94a3b8;"></div>
+              </div>
+              <span class="descartes-bar-count" style="color:var(--text-dim);">0</span>
+            </div>
+
+          </div>
+
+          <!-- X-Axis Scale Labels -->
+          <div class="descartes-axis-ticks">
+            <span>0</span>
+            <span>10</span>
+            <span>20</span>
+            <span>30</span>
+            <span>40</span>
+            <span>50</span>
+            <span>60</span>
+            <span>70</span>
+          </div>
+          <div class="descartes-axis-title">Cantidad de Mensajes Descartados</div>
+        </div>
+
+        <!-- Breakdown Explanation Cards -->
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:1rem; margin-top:1.5rem;">
+          <div class="glass-card" style="padding:1.25rem;">
+            <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
+              <span style="width:10px; height:10px; border-radius:50%; background:#38bdf8;"></span>
+              <strong style="color:#f8fafc; font-size:0.95rem;">tipo_no_elegible (64 · 90.1%)</strong>
+            </div>
+            <p style="font-size:0.82rem; color:var(--text-muted); margin:0;">
+              Mensajes informales, consultas cotidianas, saludos o memes en Discord/Slack que carecen de mérito técnico o testimonial para activos de marketing.
+            </p>
+          </div>
+
+          <div class="glass-card" style="padding:1.25rem;">
+            <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
+              <span style="width:10px; height:10px; border-radius:50%; background:#f59e0b;"></span>
+              <strong style="color:#f8fafc; font-size:0.95rem;">sentimiento_no_positivo (4 · 5.6%)</strong>
+            </div>
+            <p style="font-size:0.82rem; color:var(--text-muted); margin:0;">
+              Interacciones con frustración de usuario o críticas severas. El filtro ético y de calidad previene generar activos promocionales a partir de quejas.
+            </p>
+          </div>
+
+          <div class="glass-card" style="padding:1.25rem;">
+            <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
+              <span style="width:10px; height:10px; border-radius:50%; background:#ef4444;"></span>
+              <strong style="color:#f8fafc; font-size:0.95rem;">fallo_generacion (3 · 4.2%)</strong>
+            </div>
+            <p style="font-size:0.82rem; color:var(--text-muted); margin:0;">
+              Llamadas a Groq LLM que retornaron timeout o JSON malformado que no cumplió la validación estricta del nodo n8n, enviadas a auditoría en lugar de degradar la estación.
+            </p>
+          </div>
+        </div>
+
+        <!-- Collapsible Daily Table (Matching Streamlit expander in Image 1) -->
+        <details class="pbi-accordion" open>
+          <summary>📋 Ver Registros Diarios de Descartes (Pestaña 'Metricas_descartes_diarias')</summary>
+          <div class="pbi-accordion-content">
+            <table class="matrix-table" style="font-size:0.8rem;">
+              <thead>
+                <tr>
+                  <th>Fecha (DAX)</th>
+                  <th>Total Descartes</th>
+                  <th>Tipo No Elegible</th>
+                  <th>Sentimiento No Positivo</th>
+                  <th>Fallo Generación</th>
+                  <th>Score Bajo (&lt;6.0)</th>
+                  <th>Error Análisis</th>
+                  <th>Descartes Hoy</th>
+                  <th>Generado At (UTC)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td><strong>2026-10-22</strong></td><td style="color:#38bdf8; font-weight:700;">71</td><td>64</td><td>4</td><td>3</td><td>0</td><td>0</td><td>0</td><td>2026-10-22T06:00:57.228Z</td></tr>
+                <tr><td>2026-10-21</td><td>71</td><td>64</td><td>4</td><td>3</td><td>0</td><td>0</td><td>0</td><td>2026-10-21T06:00:53.330Z</td></tr>
+                <tr><td>2026-10-20</td><td>71</td><td>64</td><td>4</td><td>3</td><td>0</td><td>0</td><td>0</td><td>2026-10-20T06:00:52.859Z</td></tr>
+                <tr><td>2026-10-18</td><td>71</td><td>64</td><td>4</td><td>3</td><td>0</td><td>0</td><td>0</td><td>2026-10-18T06:00:52.756Z</td></tr>
+                <tr><td>2026-10-17</td><td>71</td><td>64</td><td>4</td><td>3</td><td>0</td><td>0</td><td>0</td><td>2026-10-17T06:00:52.766Z</td></tr>
+                <tr><td>2026-10-16</td><td>71</td><td>64</td><td>4</td><td>3</td><td>0</td><td>0</td><td>0</td><td>2026-10-16T06:00:52.754Z</td></tr>
+                <tr><td>2026-10-15</td><td>71</td><td>64</td><td>4</td><td>3</td><td>0</td><td>0</td><td>0</td><td>2026-10-15T06:00:52.984Z</td></tr>
+                <tr><td>2026-10-14</td><td>70</td><td>63</td><td>4</td><td>3</td><td>0</td><td>0</td><td>0</td><td>2026-10-14T06:00:55.292Z</td></tr>
+                <tr><td>2026-10-13</td><td>70</td><td>63</td><td>4</td><td>3</td><td>0</td><td>0</td><td>0</td><td>2026-10-13T23:13:42.980Z</td></tr>
+                <tr><td>2026-10-12</td><td>70</td><td>63</td><td>4</td><td>3</td><td>0</td><td>0</td><td>0</td><td>2026-10-12T22:39:51.172Z</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </details>
+
+      </div>
+
+      <!-- ==================================================================
+           SUB-PAGE 3: CONSOLA STREAMLIT EN VIVO EMBEBIDA
+           ================================================================== -->
+      <div class="pbi-subpage" id="pbi-subpage-embed">
+        <div class="streamlit-embed-card">
+          <div class="streamlit-embed-header">
+            <div style="display:flex; align-items:center; gap:0.75rem;">
+              <span style="font-size:1.3rem;">🛡️</span>
+              <div>
+                <strong style="color:#fff; font-size:0.95rem;">Consola Streamlit en Vivo (HITL & Observabilidad v2.2)</strong>
+                <span id="st-server-status" class="status-pill" style="margin-left:0.5rem; font-size:0.72rem; padding:2px 10px;">
+                  <span class="pulse-dot"></span>
+                  Servidor Local Conectado (8501)
+                </span>
+              </div>
+            </div>
+
+            <div style="display:flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
+              <button id="btn-st-toggle-local" class="btn-icon-link" style="font-size:0.75rem; padding:0.35rem 0.75rem; background:rgba(0,240,255,0.15); border-color:rgba(0,240,255,0.4); color:var(--cyan); cursor:pointer;">
+                <span>🖥️ Local (8501)</span>
+              </button>
+              <button id="btn-st-toggle-cloud" class="btn-icon-link" style="font-size:0.75rem; padding:0.35rem 0.75rem; cursor:pointer;">
+                <span>☁️ Streamlit Cloud</span>
+              </button>
+              <button id="btn-st-reload-frame" class="btn-icon-link" style="font-size:0.75rem; padding:0.35rem 0.75rem; cursor:pointer;" title="Recargar sesión de Streamlit">
+                <span>🔄 Recargar</span>
+              </button>
+              <a id="btn-st-open-newtab" href="http://localhost:8501" target="_blank" rel="noopener" class="btn-icon-link" style="font-size:0.75rem; padding:0.35rem 0.75rem;" title="Abrir en pestaña completa">
+                <span>↗️ Pantalla Completa</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="streamlit-iframe-wrapper">
+            <iframe id="streamlit-live-frame" src="http://localhost:8501/?embed=true" class="streamlit-iframe" title="CommunityLab Streamlit App v2.2"></iframe>
+          </div>
         </div>
       </div>
+
     </section>
 
     <!-- ====================================================================
@@ -648,12 +1029,12 @@
               <tr>
                 <td><strong>1. Ingestión funcional de interacciones</strong></td>
                 <td><span class="badge-status-ok">✅ Cumplido</span></td>
-                <td>Normalización en n8n mediante estructura unificada con autor, canal, texto, timestamp UTC y ID determinístico <code>CL-YYYYMMDD-XXX</code>.</td>
+                <td>Normalización en n8n mediante estructura unificada con autor, canal, texto, timestamp UTC y ID determinístico <code>CL-YYYYMMDD-XXX</code> (Webhook JSON y Manual Trigger).</td>
               </tr>
               <tr>
                 <td><strong>2. Análisis de sentimiento y extracción LLM</strong></td>
                 <td><span class="badge-status-ok">✅ Cumplido</span></td>
-                <td>Nodo Groq con LLaMA 3.3 ejecutando extracción semántica (sentimiento, temas, insight y scoring determinístico ponderado) en formato JSON estricto.</td>
+                <td>Inferencia en Groq LPU con <code>openai/gpt-oss-120b</code> ejecutando extracción semántica (sentimiento, temas, insight y fórmula <code>score_final = 0.75 × score_llm + 0.25 × peso_tipo</code>) en formato JSON estricto.</td>
               </tr>
               <tr>
                 <td><strong>3. Generación de ≥ 2 formatos de marketing</strong></td>
@@ -663,32 +1044,32 @@
               <tr>
                 <td><strong>4. Orquestación del flujo en n8n</strong></td>
                 <td><span class="badge-status-ok">✅ Cumplido</span></td>
-                <td>Pipeline modular completo con 14 nodos en WF1, switch condicional, merges, prompts especializados y control de excepciones.</td>
+                <td>Pipeline modular n8n compuesto por <strong>WF1</strong> (24 nodos), <strong>WF2</strong> (14 nodos) y <strong>WF3</strong> (8 nodos), con switch condicional, merges, prompts especializados y control de excepciones.</td>
               </tr>
               <tr>
                 <td><strong>5. Persistencia en OCI Object Storage Always Free</strong></td>
                 <td><span class="badge-status-ok">✅ Cumplido</span></td>
-                <td>Convención estricta en OCI Bucket: <code>activos/{periodo}/{execution_id}/{asset_id}.json</code> mediante llamadas REST API con IAM Request Signing.</td>
+                <td>Convención en OCI Bucket: <code>activos/aprobados/{execution_id}/{asset_id}.json</code> mediante llamadas REST HTTP PUT autenticadas con <strong>Pre-Authenticated Request (PAR)</strong> al aprobar.</td>
               </tr>
               <tr>
                 <td><strong>6. Demostración de ≥ 3 ejemplos de transformación</strong></td>
                 <td><span class="badge-status-ok">✅ Cumplido</span></td>
-                <td>Dataset de prueba con 4 interacciones cubriendo las 3 ramas activas (testimonio, duda técnica, logro) y el caso de descarte por bajo score.</td>
+                <td>Dataset de prueba con 4 interacciones cubriendo las 3 ramas activas (testimonio, duda técnica, logro) y el caso de auditoría de descarte (motivo <code>tipo_no_elegible</code>).</td>
               </tr>
               <tr>
                 <td><strong>7. Documentación y diagrama del pipeline</strong></td>
                 <td><span class="badge-status-ok">✅ Cumplido</span></td>
-                <td>Documentación exhaustiva en <code>README.md</code>, contratos de datos formalizados, diagramas Mermaid y especificaciones de despliegue.</td>
+                <td>Documentación exhaustiva en <code>README.md</code>, contratos de datos formalizados, diagramas de arquitectura y credenciales centralizadas.</td>
               </tr>
               <tr>
                 <td><strong>Diferencial: Curaduría Humana (Human-in-the-Loop)</strong></td>
                 <td><span class="badge-status-ok">⭐ Destacado</span></td>
-                <td>Doble interfaz: Streamlit local (<code>app.py</code>) + Portal Web interactivo en Netlify conectado a Google Sheets en tiempo real.</td>
+                <td>Doble interfaz: Streamlit Cloud en producción v2.2 (<code>app.py</code>) + Portal Web interactivo en Netlify conectado a Google Sheets con escritura atómica.</td>
               </tr>
               <tr>
-                <td><strong>Diferencial: Observabilidad Diaria</strong></td>
+                <td><strong>Diferencial: Observabilidad Diaria & Power BI</strong></td>
                 <td><span class="badge-status-ok">⭐ Destacado</span></td>
-                <td>Workflow WF3 con cálculo automático de volumen, distribución de sentimiento y métricas de retención comunitaria.</td>
+                <td>Workflow WF3 con consolidación diaria hacia Google Sheets y reporte analítico de 2 páginas en <strong>Power BI Desktop</strong> (<code>CommunityLab_Dashboard.pbix</code>) con regla DAX <code>MAX(fecha)</code>.</td>
               </tr>
             </tbody>
           </table>

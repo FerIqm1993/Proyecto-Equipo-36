@@ -1,5 +1,5 @@
 {
-  "name": "CommunityLab - WF1 Ingesta + Validación Generación",
+  "name": "CommunityLab - WF1 Ingesta + Validación Generación 1.8 V",
   "nodes": [
     {
       "parameters": {
@@ -11,7 +11,10 @@
       "name": "Webhook",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
-      "position": [-1920, 352],
+      "position": [
+        -1920,
+        352
+      ],
       "webhookId": "communitylab-ingesta"
     },
     {
@@ -20,7 +23,10 @@
       "name": "Manual Trigger",
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
-      "position": [-1920, 528]
+      "position": [
+        -1920,
+        528
+      ]
     },
     {
       "parameters": {
@@ -30,7 +36,10 @@
       "name": "Normalización",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [-1680, 352]
+      "position": [
+        -1680,
+        352
+      ]
     },
     {
       "parameters": {
@@ -41,7 +50,10 @@
       "name": "Construir Prompt Análisis",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [-1440, 352]
+      "position": [
+        -1440,
+        352
+      ]
     },
     {
       "parameters": {
@@ -74,12 +86,20 @@
       "name": "Groq - Análisis",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
-      "position": [-1200, 352],
+      "position": [
+        -1200,
+        352
+      ],
       "retryOnFail": true,
       "maxTries": 3,
       "waitBetweenTries": 5000,
-      "onError": "continueRegularOutput",
-      "notes": "CREDENCIAL: Header Auth → Name: Authorization · Value: Bearer COLOCA_AQUI_TU_API_KEY_DE_GROQ"
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "sojrKDP3ZzS331QL",
+          "name": "Header Auth account"
+        }
+      },
+      "onError": "continueRegularOutput"
     },
     {
       "parameters": {
@@ -90,7 +110,10 @@
       "name": "Parse + Scoring",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [-960, 352]
+      "position": [
+        -960,
+        352
+      ]
     },
     {
       "parameters": {
@@ -120,7 +143,10 @@
       "name": "IF Elegible",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
-      "position": [-720, 352]
+      "position": [
+        -720,
+        352
+      ]
     },
     {
       "parameters": {
@@ -131,7 +157,10 @@
       "name": "Preparar Descartados",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [-480, 576]
+      "position": [
+        -480,
+        576
+      ]
     },
     {
       "parameters": {
@@ -144,7 +173,148 @@
           "mappingMode": "autoMapInputData",
           "value": {},
           "matchingColumns": [],
-          "schema": [],
+          "schema": [
+            {
+              "id": "execution_id",
+              "displayName": "execution_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "interaction_id",
+              "displayName": "interaction_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "autor",
+              "displayName": "autor",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "canal",
+              "displayName": "canal",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "tipo_detectado",
+              "displayName": "tipo_detectado",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "sentimiento",
+              "displayName": "sentimiento",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "score_final",
+              "displayName": "score_final",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "motivo_descarte",
+              "displayName": "motivo_descarte",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "texto_original",
+              "displayName": "texto_original",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "estado",
+              "displayName": "estado",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "timestamp",
+              "displayName": "timestamp",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "tipo_original",
+              "displayName": "tipo_original",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "insight",
+              "displayName": "insight",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "score_llm",
+              "displayName": "score_llm",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
           "attemptToConvertTypes": false,
           "convertFieldsToString": false
         },
@@ -154,8 +324,10 @@
       "name": "Log Descartados (Data Table)",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
-      "position": [-240, 576],
-      "notes": "Crear Data Table en n8n con nombre: communitylab_descartados"
+      "position": [
+        -240,
+        576
+      ]
     },
     {
       "parameters": {
@@ -240,7 +412,10 @@
       "name": "Switch - Bifurcación",
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3,
-      "position": [-480, 208]
+      "position": [
+        -480,
+        208
+      ]
     },
     {
       "parameters": {
@@ -251,7 +426,10 @@
       "name": "Prompt LinkedIn",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [-240, 48]
+      "position": [
+        -240,
+        48
+      ]
     },
     {
       "parameters": {
@@ -284,12 +462,20 @@
       "name": "Groq - Generar LinkedIn",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
-      "position": [-16, 48],
+      "position": [
+        -16,
+        48
+      ],
       "retryOnFail": true,
       "maxTries": 3,
       "waitBetweenTries": 5000,
-      "onError": "continueRegularOutput",
-      "notes": "CREDENCIAL: Header Auth → Authorization: Bearer COLOCA_AQUI_TU_API_KEY_DE_GROQ"
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "sojrKDP3ZzS331QL",
+          "name": "Header Auth account"
+        }
+      },
+      "onError": "continueRegularOutput"
     },
     {
       "parameters": {
@@ -300,7 +486,10 @@
       "name": "Parse LinkedIn",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [208, 48]
+      "position": [
+        208,
+        48
+      ]
     },
     {
       "parameters": {
@@ -311,7 +500,10 @@
       "name": "Prompt FAQ",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [-240, 224]
+      "position": [
+        -240,
+        224
+      ]
     },
     {
       "parameters": {
@@ -344,12 +536,20 @@
       "name": "Groq - Generar FAQ",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
-      "position": [-16, 224],
+      "position": [
+        -16,
+        224
+      ],
       "retryOnFail": true,
       "maxTries": 3,
       "waitBetweenTries": 5000,
-      "onError": "continueRegularOutput",
-      "notes": "CREDENCIAL: Header Auth → Authorization: Bearer COLOCA_AQUI_TU_API_KEY_DE_GROQ"
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "sojrKDP3ZzS331QL",
+          "name": "Header Auth account"
+        }
+      },
+      "onError": "continueRegularOutput"
     },
     {
       "parameters": {
@@ -360,7 +560,10 @@
       "name": "Parse FAQ",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [176, 224]
+      "position": [
+        176,
+        224
+      ]
     },
     {
       "parameters": {
@@ -371,7 +574,10 @@
       "name": "Prompt Newsletter",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [-240, 416]
+      "position": [
+        -240,
+        416
+      ]
     },
     {
       "parameters": {
@@ -404,12 +610,20 @@
       "name": "Groq - Generar Newsletter",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
-      "position": [-16, 416],
+      "position": [
+        -16,
+        416
+      ],
       "retryOnFail": true,
       "maxTries": 3,
       "waitBetweenTries": 5000,
-      "onError": "continueRegularOutput",
-      "notes": "CREDENCIAL: Header Auth → Authorization: Bearer COLOCA_AQUI_TU_API_KEY_DE_GROQ"
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "sojrKDP3ZzS331QL",
+          "name": "Header Auth account"
+        }
+      },
+      "onError": "continueRegularOutput"
     },
     {
       "parameters": {
@@ -420,7 +634,10 @@
       "name": "Parse Newsletter",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [208, 416]
+      "position": [
+        208,
+        416
+      ]
     },
     {
       "parameters": {
@@ -430,7 +647,10 @@
       "name": "Merge Activos",
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3,
-      "position": [432, 208]
+      "position": [
+        432,
+        208
+      ]
     },
     {
       "parameters": {
@@ -460,7 +680,10 @@
       "name": "IF Generación OK",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
-      "position": [640, 224]
+      "position": [
+        640,
+        224
+      ]
     },
     {
       "parameters": {
@@ -471,7 +694,10 @@
       "name": "Preparar Fallo Generación",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [864, 368]
+      "position": [
+        864,
+        368
+      ]
     },
     {
       "parameters": {
@@ -481,14 +707,17 @@
       "name": "Preparar Filas Curaduría",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [864, 128]
+      "position": [
+        864,
+        128
+      ]
     },
     {
       "parameters": {
         "operation": "append",
         "documentId": {
           "__rl": true,
-          "value": "COLOCA_AQUI_EL_ID_DE_TU_GOOGLE_SHEET",
+          "value": "1nY40IJ4ludaHQcTEV8nDlHNi6ikl-4x5CUJocvrsHfk",
           "mode": "id"
         },
         "sheetName": {
@@ -500,7 +729,158 @@
           "mappingMode": "autoMapInputData",
           "value": {},
           "matchingColumns": [],
-          "schema": [],
+          "schema": [
+            {
+              "id": "execution_id",
+              "displayName": "execution_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "asset_id",
+              "displayName": "asset_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "interaction_id",
+              "displayName": "interaction_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "tipo_activo",
+              "displayName": "tipo_activo",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "autor",
+              "displayName": "autor",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "score_final",
+              "displayName": "score_final",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "contenido",
+              "displayName": "contenido",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "contenido_json",
+              "displayName": "contenido_json",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "estado",
+              "displayName": "estado",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "decision",
+              "displayName": "decision",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "user",
+              "displayName": "user",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "decision_at",
+              "displayName": "decision_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "comentario",
+              "displayName": "comentario",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "estado_proceso",
+              "displayName": "estado_proceso",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "timestamp",
+              "displayName": "timestamp",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
           "attemptToConvertTypes": false,
           "convertFieldsToString": false
         },
@@ -510,94 +890,302 @@
       "name": "Enviar a Curaduría (Sheets)",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.7,
-      "position": [1088, 128],
-      "notes": "1) Document ID = ID de tu Google Sheet\n2) Credential = Google Sheets OAuth2\n3) Pestaña debe llamarse Curaduria"
+      "position": [
+        1088,
+        128
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "keQl0Xe7WgYyM3x6",
+          "name": "Google Sheets account"
+        }
+      }
     }
   ],
+  "pinData": {},
   "connections": {
     "Webhook": {
-      "main": [[{ "node": "Normalización", "type": "main", "index": 0 }]]
+      "main": [
+        [
+          {
+            "node": "Normalización",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     },
     "Manual Trigger": {
-      "main": [[{ "node": "Normalización", "type": "main", "index": 0 }]]
+      "main": [
+        [
+          {
+            "node": "Normalización",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     },
     "Normalización": {
-      "main": [[{ "node": "Construir Prompt Análisis", "type": "main", "index": 0 }]]
+      "main": [
+        [
+          {
+            "node": "Construir Prompt Análisis",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     },
     "Construir Prompt Análisis": {
-      "main": [[{ "node": "Groq - Análisis", "type": "main", "index": 0 }]]
+      "main": [
+        [
+          {
+            "node": "Groq - Análisis",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     },
     "Groq - Análisis": {
-      "main": [[{ "node": "Parse + Scoring", "type": "main", "index": 0 }]]
+      "main": [
+        [
+          {
+            "node": "Parse + Scoring",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     },
     "Parse + Scoring": {
-      "main": [[{ "node": "IF Elegible", "type": "main", "index": 0 }]]
+      "main": [
+        [
+          {
+            "node": "IF Elegible",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     },
     "IF Elegible": {
       "main": [
-        [{ "node": "Switch - Bifurcación", "type": "main", "index": 0 }],
-        [{ "node": "Preparar Descartados", "type": "main", "index": 0 }]
+        [
+          {
+            "node": "Switch - Bifurcación",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Preparar Descartados",
+            "type": "main",
+            "index": 0
+          }
+        ]
       ]
     },
     "Preparar Descartados": {
-      "main": [[{ "node": "Log Descartados (Data Table)", "type": "main", "index": 0 }]]
+      "main": [
+        [
+          {
+            "node": "Log Descartados (Data Table)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     },
     "Switch - Bifurcación": {
       "main": [
-        [{ "node": "Prompt LinkedIn", "type": "main", "index": 0 }],
-        [{ "node": "Prompt FAQ", "type": "main", "index": 0 }],
-        [{ "node": "Prompt Newsletter", "type": "main", "index": 0 }]
+        [
+          {
+            "node": "Prompt LinkedIn",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Prompt FAQ",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Prompt Newsletter",
+            "type": "main",
+            "index": 0
+          }
+        ]
       ]
     },
     "Prompt LinkedIn": {
-      "main": [[{ "node": "Groq - Generar LinkedIn", "type": "main", "index": 0 }]]
+      "main": [
+        [
+          {
+            "node": "Groq - Generar LinkedIn",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     },
     "Groq - Generar LinkedIn": {
-      "main": [[{ "node": "Parse LinkedIn", "type": "main", "index": 0 }]]
+      "main": [
+        [
+          {
+            "node": "Parse LinkedIn",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     },
     "Parse LinkedIn": {
-      "main": [[{ "node": "Merge Activos", "type": "main", "index": 0 }]]
+      "main": [
+        [
+          {
+            "node": "Merge Activos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     },
     "Prompt FAQ": {
-      "main": [[{ "node": "Groq - Generar FAQ", "type": "main", "index": 0 }]]
+      "main": [
+        [
+          {
+            "node": "Groq - Generar FAQ",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     },
     "Groq - Generar FAQ": {
-      "main": [[{ "node": "Parse FAQ", "type": "main", "index": 0 }]]
+      "main": [
+        [
+          {
+            "node": "Parse FAQ",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     },
     "Parse FAQ": {
-      "main": [[{ "node": "Merge Activos", "type": "main", "index": 1 }]]
+      "main": [
+        [
+          {
+            "node": "Merge Activos",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
     },
     "Prompt Newsletter": {
-      "main": [[{ "node": "Groq - Generar Newsletter", "type": "main", "index": 0 }]]
+      "main": [
+        [
+          {
+            "node": "Groq - Generar Newsletter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     },
     "Groq - Generar Newsletter": {
-      "main": [[{ "node": "Parse Newsletter", "type": "main", "index": 0 }]]
+      "main": [
+        [
+          {
+            "node": "Parse Newsletter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     },
     "Parse Newsletter": {
-      "main": [[{ "node": "Merge Activos", "type": "main", "index": 2 }]]
+      "main": [
+        [
+          {
+            "node": "Merge Activos",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
     },
     "Merge Activos": {
-      "main": [[{ "node": "IF Generación OK", "type": "main", "index": 0 }]]
+      "main": [
+        [
+          {
+            "node": "IF Generación OK",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     },
     "IF Generación OK": {
       "main": [
-        [{ "node": "Preparar Filas Curaduría", "type": "main", "index": 0 }],
-        [{ "node": "Preparar Fallo Generación", "type": "main", "index": 0 }]
+        [
+          {
+            "node": "Preparar Filas Curaduría",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Preparar Fallo Generación",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar Filas Curaduría": {
+      "main": [
+        [
+          {
+            "node": "Enviar a Curaduría (Sheets)",
+            "type": "main",
+            "index": 0
+          }
+        ]
       ]
     },
     "Preparar Fallo Generación": {
-      "main": [[{ "node": "Log Descartados (Data Table)", "type": "main", "index": 0 }]]
-    },
-    "Preparar Filas Curaduría": {
-      "main": [[{ "node": "Enviar a Curaduría (Sheets)", "type": "main", "index": 0 }]]
+      "main": [
+        [
+          {
+            "node": "Log Descartados (Data Table)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
+  "active": true,
   "settings": {
-    "executionOrder": "v1"
+    "executionOrder": "v1",
+    "binaryMode": "separate"
   },
-  "staticData": null,
-  "pinData": {},
+  "versionId": "38e418b2-e3d5-451f-92a5-79cc7fafa7d9",
   "meta": {
-    "templateCredsSetupCompleted": false
-  }
+    "templateCredsSetupCompleted": true,
+    "instanceId": "f1efd68212395172df6e0c0afcba127e4ff99d9ad4ddef083c90039c82106c77"
+  },
+  "nodeGroups": [],
+  "id": "OnClOklR9dgm1Oyv",
+  "tags": []
 }

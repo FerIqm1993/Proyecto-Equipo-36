@@ -16,6 +16,11 @@ venv.bak/
 .env.local
 .streamlit/secrets.toml
 secrets.toml
+*.secret
+SECRETS_*.toml
+SECRETS_*.env
+DATOS_SENSIBLES_*.md
+
 
 # Google Cloud credentials and keys (preserva workflows/*.json)
 *.pem
@@ -23,6 +28,7 @@ secrets.toml
 credentials.json
 service_account.json
 client_secret*.json
+gen-lang-*.json
 
 # IDE / Editor files
 .vscode/

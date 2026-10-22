@@ -49,7 +49,10 @@ const FALLBACK_RECORDS = [
   }
 ];
 
-// Ingesta Simulator Presets
+// Ingesta Simulator Presets (Alineados a la fórmula de producción WF1)
+// score_final = 0.75 × score_llm + 0.25 × peso_tipo
+// Pesos: testimonio 2.0 · logro 1.5 · pregunta_tecnica 1.5 · otro 0.5
+// Elegible si: tipo ∈ {testimonio, pregunta_tecnica, logro} Y sentimiento positivo Y score_final ≥ 6.0
 const SIMULATOR_PRESETS = {
   mariana: {
     autor: "Mariana Souza",
@@ -58,7 +61,7 @@ const SIMULATOR_PRESETS = {
     tipo_detectado: "testimonio",
     sentimiento: "muy_positivo",
     temas: ["empleo", "formacion", "agradecimiento", "desarrollo_web"],
-    scores: { afinidad: 9.0, sentimiento: 9.5, profundidad: 7.0, final: 8.5 },
+    scores: { score_llm: 9.0, peso_tipo: 2.0, final: 7.25 },
     rama: "Rama A: Post LinkedIn",
     activo_generado: {
       tipo: "linkedin",
@@ -71,9 +74,9 @@ const SIMULATOR_PRESETS = {
     canal: "#ayuda-tecnica",
     texto: "¿Alguien sabe cómo configurar correctamente los permisos IAM en Oracle Cloud (OCI) para que n8n pueda escribir en el Bucket de Object Storage sin darle permisos de Administrador a toda la cuenta?",
     tipo_detectado: "pregunta_tecnica",
-    sentimiento: "neutro",
+    sentimiento: "positivo",
     temas: ["oci", "n8n", "seguridad_iam", "object_storage"],
-    scores: { afinidad: 8.5, sentimiento: 6.5, profundidad: 8.5, final: 7.8 },
+    scores: { score_llm: 9.0, peso_tipo: 1.5, final: 7.13 },
     rama: "Rama B: FAQ Dinámico / Tip Técnico",
     activo_generado: {
       tipo: "faq",
@@ -89,7 +92,7 @@ const SIMULATOR_PRESETS = {
     tipo_detectado: "logro",
     sentimiento: "muy_positivo",
     temas: ["hackathon", "proyecto_final", "reconocimiento", "apis"],
-    scores: { afinidad: 8.8, sentimiento: 9.0, profundidad: 7.0, final: 8.2 },
+    scores: { score_llm: 9.1, peso_tipo: 1.5, final: 7.20 },
     rama: "Rama C: Newsletter Semanal",
     activo_generado: {
       tipo: "newsletter",
@@ -104,8 +107,9 @@ const SIMULATOR_PRESETS = {
     tipo_detectado: "otro",
     sentimiento: "neutro",
     temas: ["consulta_informal"],
-    scores: { afinidad: 2.0, sentimiento: 4.0, profundidad: 1.0, final: 2.1 },
-    rama: "Descarte / Auditoría (Score < 6.0)",
+    scores: { score_llm: 3.0, peso_tipo: 0.5, final: 2.38 },
+    rama: "Descarte / Auditoría (Motivo: tipo_no_elegible)",
+    motivo_descarte: "tipo_no_elegible",
     activo_generado: null
   }
 };
@@ -342,7 +346,7 @@ function handleApproveOCI() {
 
   const payload = {
     metadata: {
-      sistema: "CommunityLab Motor Inteligente v2.1",
+      sistema: "CommunityLab Motor Inteligente v2.2",
       hackathon: "Hackathon ONE G10 - Oracle & Alura",
       equipo: "Equipo 36",
       decision_humana: "aprobado",
@@ -351,14 +355,17 @@ function handleApproveOCI() {
     },
     oracle_cloud_infrastructure: {
       tenancy: "communitylab_always_free",
-      bucket_name: "communitylab-activos-curados",
+      namespace: "grslzqluxaia",
+      bucket_name: "communitylab-activos-marketing",
       storage_tier: "Standard",
-      region: "us-ashburn-1",
-      prefix_convencion: `activos/Semana_04/${execId}/`,
+      region: "sa-saopaulo-1",
+      metodo_autenticacion: "Pre-Authenticated Request (PAR) + HTTP PUT",
+      par_base_url: "https://objectstorage.sa-saopaulo-1.oraclecloud.com/p/SWqrKsMINlrIcljYtY-AwmK5_E6aKqxmp-8JHrfR2XpiDOXnG5MqTzgqweFEaR1C/n/grslzqluxaia/b/communitylab-activos-marketing/o/",
+      prefix_convencion: `activos/aprobados/${execId}/`,
       objetos_persistidos: [
-        `activos/Semana_04/${execId}/asset-001-li.json`,
-        `activos/Semana_04/${execId}/asset-002-faq.json`,
-        `activos/Semana_04/${execId}/asset-003-nl.json`
+        `activos/aprobados/${execId}/${execId}-li.json`,
+        `activos/aprobados/${execId}/${execId}-faq.json`,
+        `activos/aprobados/${execId}/${execId}-nl.json`
       ]
     },
     activos_validados: {
@@ -392,7 +399,7 @@ function handleApproveOCI() {
   const ociPathText = document.getElementById('oci-path-text');
 
   if (codeDisplay) codeDisplay.textContent = JSON.stringify(payload, null, 2);
-  if (ociPathText) ociPathText.textContent = `oci://communitylab-activos-curados/activos/Semana_04/${execId}/`;
+  if (ociPathText) ociPathText.textContent = `oci://communitylab-activos-marketing/activos/aprobados/${execId}/`;
   if (ociPanel) {
     ociPanel.classList.add('visible');
     ociPanel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
@@ -407,7 +414,7 @@ function handleApproveOCI() {
     statusPill.style.background = 'rgba(16, 185, 129, 0.15)';
   }
 
-  showToast('🎉 ¡Contenido aprobado y persistido en OCI Object Storage Always Free!');
+  showToast('🎉 ¡Contenido aprobado y persistido en OCI Object Storage Always Free vía PAR!');
 }
 
 // Reject Action
@@ -478,15 +485,18 @@ function runCustomSimulator() {
   const isTestimonial = texto.toLowerCase().includes('oferta') || texto.toLowerCase().includes('trabajo') || texto.toLowerCase().includes('gracias') || texto.toLowerCase().includes('junior');
   const isLogro = texto.toLowerCase().includes('hackathon') || texto.toLowerCase().includes('ganamos') || texto.toLowerCase().includes('proyecto');
 
+  const pesos = { testimonio: 2.0, logro: 1.5, pregunta_tecnica: 1.5, otro: 0.5 };
   let tipo = "otro";
-  let rama = "Descarte / Auditoría";
-  let score = 3.5;
+  let rama = "Descarte / Auditoría (tipo_no_elegible)";
+  let motivoDescarte = "tipo_no_elegible";
+  let scoreLlm = 3.0;
   let activo = null;
 
   if (isTestimonial) {
     tipo = "testimonio";
     rama = "Rama A: Post LinkedIn";
-    score = 8.6;
+    scoreLlm = 9.0;
+    motivoDescarte = null;
     activo = {
       tipo: "linkedin",
       titulo: `Caso de Éxito de ${autor}`,
@@ -495,7 +505,8 @@ function runCustomSimulator() {
   } else if (isQuestion) {
     tipo = "pregunta_tecnica";
     rama = "Rama B: FAQ Dinámico";
-    score = 7.7;
+    scoreLlm = 9.0;
+    motivoDescarte = null;
     activo = {
       tipo: "faq",
       tema: `Solución técnica: ${texto.slice(0, 40)}`,
@@ -505,7 +516,8 @@ function runCustomSimulator() {
   } else if (isLogro) {
     tipo = "logro";
     rama = "Rama C: Newsletter Semanal";
-    score = 8.1;
+    scoreLlm = 9.1;
+    motivoDescarte = null;
     activo = {
       tipo: "newsletter",
       titular: `Logro destacado: ${autor}`,
@@ -513,15 +525,29 @@ function runCustomSimulator() {
     };
   }
 
+  const pesoTipo = pesos[tipo] || 0.5;
+  const scoreFinal = Number(((0.75 * scoreLlm) + (0.25 * pesoTipo)).toFixed(2));
+  const sentimiento = isQuestion ? "positivo" : (isTestimonial || isLogro ? "muy_positivo" : "neutro");
+  const isElegible = ["testimonio", "logro", "pregunta_tecnica"].includes(tipo) && (sentimiento === "positivo" || sentimiento === "muy_positivo") && scoreFinal >= 6.0;
+
+  if (!isElegible && !motivoDescarte) {
+    if (!["testimonio", "logro", "pregunta_tecnica"].includes(tipo)) motivoDescarte = "tipo_no_elegible";
+    else if (scoreFinal < 6.0) motivoDescarte = "score_bajo";
+    else motivoDescarte = "sentimiento_no_positivo";
+    activo = null;
+    rama = `Descarte / Auditoría (${motivoDescarte})`;
+  }
+
   const customPreset = {
     autor,
     canal,
     texto,
     tipo_detectado: tipo,
-    sentimiento: score >= 6.0 ? "positivo" : "neutro",
+    sentimiento,
     temas: ["comunidad", "aprendizaje", "tecnologia"],
-    scores: { afinidad: 8.0, sentimiento: 7.5, profundidad: 7.0, final: score },
+    scores: { score_llm: scoreLlm, peso_tipo: pesoTipo, final: scoreFinal },
     rama,
+    motivo_descarte: motivoDescarte,
     activo_generado: activo
   };
 
@@ -562,9 +588,11 @@ function runSimulatorTrace(preset) {
         </div>`;
     }
   } else {
+    const motivo = preset.motivo_descarte || "tipo_no_elegible";
     activoHTML = `
       <div style="background:rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.3); border-radius:8px; padding:0.85rem; color:#fca5a5; font-size:0.85rem;">
-        ⛔ Score (${score.toFixed(1)}) inferior al umbral mínimo (6.0). El pipeline descarta el mensaje para no generar ruido de marketing y almacena el registro en log de auditoría.
+        ⛔ <strong>Mensaje Descartado (Motivo: <code>${motivo}</code>)</strong><br>
+        Score final: ${score.toFixed(2)} / 10 · Criterio oficial WF1: Solo avanzan mensajes de tipo <em>testimonio, logro o pregunta técnica</em> con sentimiento positivo y score ≥ 6.0. El registro se audita en la pestaña <code>Metricas_descartes_diarias</code>.
       </div>`;
   }
 
@@ -573,15 +601,15 @@ function runSimulatorTrace(preset) {
       <div class="trace-step active-step">
         <div class="step-num">1</div>
         <div class="step-info">
-          <div class="step-title">Normalización & Ingesta</div>
-          <div class="step-desc">Asignado execution_id único <code>CL-20261014-XXX</code> y estandarizado autor: <strong>${escapeHTML(preset.autor)}</strong> en canal <code>${escapeHTML(preset.canal)}</code>.</div>
+          <div class="step-title">Normalización & Ingesta (Webhook JSON)</div>
+          <div class="step-desc">Asignado execution_id único <code>CL-20261022-XXX</code> y estandarizado autor: <strong>${escapeHTML(preset.autor)}</strong> en canal <code>${escapeHTML(preset.canal)}</code>.</div>
         </div>
       </div>
 
       <div class="trace-step active-step">
         <div class="step-num">2</div>
         <div class="step-info">
-          <div class="step-title">Groq LLM (Llama 3.3): Análisis Semántico</div>
+          <div class="step-title">Groq LLM (openai/gpt-oss-120b): Análisis Semántico</div>
           <div class="step-desc">
             Tipo Detectado: <strong style="color:var(--cyan)">${preset.tipo_detectado}</strong> | 
             Sentimiento: <strong style="color:var(--emerald)">${preset.sentimiento}</strong> | 
@@ -593,13 +621,13 @@ function runSimulatorTrace(preset) {
       <div class="trace-step active-step">
         <div class="step-num">3</div>
         <div class="step-info">
-          <div class="step-title">Scoring Determinístico: ${score.toFixed(1)} / 10</div>
+          <div class="step-title">Scoring Oficial: ${score.toFixed(2)} / 10</div>
           <div class="scoring-meter">
             <div class="meter-bar">
               <div class="meter-fill" style="width: ${Math.min(score * 10, 100)}%;"></div>
             </div>
           </div>
-          <div class="step-desc" style="margin-top:0.3rem;">Fórmula ponderada: Afinidad (${preset.scores.afinidad}) + Sentimiento (${preset.scores.sentimiento}) + Profundidad (${preset.scores.profundidad}).</div>
+          <div class="step-desc" style="margin-top:0.3rem;">Fórmula de producción: <code>score_final = 0.75 × score_llm (${preset.scores.score_llm || 9.0}) + 0.25 × peso_tipo (${preset.scores.peso_tipo || 2.0})</code>. <br><em style="font-size:0.75rem; color:var(--text-dim);">*Simulador ilustrativo; la fórmula oficial se ejecuta en el nodo HTTP Groq de WF1.</em></div>
         </div>
       </div>
 
@@ -622,22 +650,41 @@ function runSimulatorTrace(preset) {
   `;
 }
 
-// Update Observability & Metrics Tab
+// Update Observability & Metrics Tab (Valores Reales Sincronizados con Power BI / Sheet)
 function updateMetricsTab() {
-  const total = state.records.length || 12;
-  const avgScore = (state.records.reduce((acc, r) => acc + (parseFloat(r.score_promedio) || 7.5), 0) / (total || 1)).toFixed(1);
-
   const elTotal = document.getElementById('metric-total-interactions');
   const elAvg = document.getElementById('metric-avg-score');
   const elApproved = document.getElementById('metric-total-oci');
+  const elRate = document.getElementById('metric-approval-rate');
+  const elDesc = document.getElementById('metric-total-descartes');
 
-  if (elTotal) elTotal.textContent = total * 4;
-  if (elAvg) elAvg.textContent = `${avgScore} / 10`;
-  if (elApproved) elApproved.textContent = total * 3;
+  if (elTotal) elTotal.textContent = "77";
+  if (elAvg) elAvg.textContent = "7.18 / 10";
+  if (elApproved) elApproved.textContent = "13";
+  if (elRate) elRate.textContent = "36.1%";
+  if (elDesc) elDesc.textContent = "71";
 }
 
-// Tab Switching
-function switchTab(tabId) {
+// Tab Switching & Sub-view Routing
+function switchPbiSubPage(subPageId) {
+  document.querySelectorAll('.pbi-subtab-btn').forEach(btn => {
+    btn.classList.remove('active');
+  });
+  document.querySelectorAll('.pbi-subpage').forEach(page => {
+    page.classList.remove('active');
+  });
+
+  const activeBtn = document.querySelector(`.pbi-subtab-btn[data-pbi-sub="${subPageId}"]`);
+  const activePage = document.getElementById(`pbi-subpage-${subPageId}`);
+
+  if (activeBtn) activeBtn.classList.add('active');
+  if (activePage) activePage.classList.add('active');
+}
+
+function switchTab(tabId, targetSubPage = null) {
+  // Support aliases
+  if (tabId === 'metricas') tabId = 'powerbi';
+
   state.activeTab = tabId;
 
   document.querySelectorAll('.tab-content').forEach(tab => {
@@ -653,6 +700,10 @@ function switchTab(tabId) {
 
   if (activeContent) activeContent.classList.add('active');
   if (activeNavItem) activeNavItem.classList.add('active');
+
+  if (tabId === 'powerbi' && targetSubPage) {
+    switchPbiSubPage(targetSubPage);
+  }
 
   // Trigger preset on simulator tab if first time
   if (tabId === 'simulador') {
@@ -710,6 +761,83 @@ document.addEventListener('DOMContentLoaded', () => {
       if (tab) switchTab(tab);
     });
   });
+
+  // Tab switch buttons from Hero, Banners, and Links
+  document.querySelectorAll('[data-tab-switch]').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const tab = btn.getAttribute('data-tab-switch');
+      const targetSub = btn.getAttribute('data-pbi-target');
+      if (tab) {
+        switchTab(tab, targetSub);
+        const targetEl = document.getElementById(`tab-${tab === 'metricas' ? 'powerbi' : tab}`);
+        if (targetEl) {
+          targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }
+    });
+  });
+
+  // Power BI Sub-page Tabs
+  document.querySelectorAll('[data-pbi-sub]').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const sub = btn.getAttribute('data-pbi-sub');
+      if (sub) {
+        switchPbiSubPage(sub);
+      }
+    });
+  });
+
+  // Live Streamlit Controls
+  const iframe = document.getElementById('streamlit-live-frame');
+  const btnToggleLocal = document.getElementById('btn-st-toggle-local');
+  const btnToggleCloud = document.getElementById('btn-st-toggle-cloud');
+  const btnReloadFrame = document.getElementById('btn-st-reload-frame');
+  const btnOpenNewTab = document.getElementById('btn-st-open-newtab');
+  const statusPill = document.getElementById('st-server-status');
+
+  if (btnToggleLocal && iframe) {
+    btnToggleLocal.addEventListener('click', () => {
+      iframe.src = 'http://localhost:8501/?embed=true';
+      btnToggleLocal.style.background = 'rgba(0,240,255,0.15)';
+      btnToggleLocal.style.borderColor = 'rgba(0,240,255,0.4)';
+      btnToggleLocal.style.color = 'var(--cyan)';
+      if (btnToggleCloud) {
+        btnToggleCloud.style.background = 'transparent';
+        btnToggleCloud.style.borderColor = 'transparent';
+        btnToggleCloud.style.color = 'var(--text-muted)';
+      }
+      if (btnOpenNewTab) btnOpenNewTab.href = 'http://localhost:8501';
+      if (statusPill) statusPill.innerHTML = '<span class="pulse-dot"></span> Servidor Local Conectado (8501)';
+      showToast('Cargando Streamlit Local (http://localhost:8501)...');
+    });
+  }
+
+  if (btnToggleCloud && iframe) {
+    btnToggleCloud.addEventListener('click', () => {
+      iframe.src = 'https://g10-latam-equipo-36.streamlit.app/?embed=true';
+      btnToggleCloud.style.background = 'rgba(255,75,75,0.15)';
+      btnToggleCloud.style.borderColor = 'rgba(255,75,75,0.4)';
+      btnToggleCloud.style.color = '#ff6b6b';
+      if (btnToggleLocal) {
+        btnToggleLocal.style.background = 'transparent';
+        btnToggleLocal.style.borderColor = 'transparent';
+        btnToggleLocal.style.color = 'var(--text-muted)';
+      }
+      if (btnOpenNewTab) btnOpenNewTab.href = 'https://g10-latam-equipo-36.streamlit.app/';
+      if (statusPill) statusPill.innerHTML = '<span class="pulse-dot" style="background:#ff6b6b; box-shadow:0 0 8px #ff6b6b;"></span> Streamlit Cloud en Vivo';
+      showToast('Cargando Streamlit Cloud en Producción...');
+    });
+  }
+
+  if (btnReloadFrame && iframe) {
+    btnReloadFrame.addEventListener('click', () => {
+      const currentSrc = iframe.src;
+      iframe.src = currentSrc;
+      showToast('Recargando consola Streamlit...');
+    });
+  }
 
   // Select Execution Dropdown Change
   const select = document.getElementById('select-execution');

@@ -1368,7 +1368,7 @@ code, pre {
     grid-template-columns: repeat(2, 1fr);
   }
   .charts-row, .simulator-layout {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr !important;
   }
 }
 
@@ -1383,3 +1383,253 @@ code, pre {
     grid-template-columns: 1fr;
   }
 }
+
+/* Power BI & Funnel Enhancements */
+.funnel-step {
+  transition: transform var(--transition-fast);
+}
+
+.funnel-step:hover {
+  transform: translateX(4px);
+}
+
+.pbi-banner-card {
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(12px);
+  transition: border-color var(--transition-fast);
+}
+
+.pbi-banner-card:hover {
+  border-color: rgba(0, 240, 255, 0.3) !important;
+}
+
+/* ==========================================================================
+   Power BI Integrated Sub-Navigation, Descartes Chart & Live Streamlit Embed
+   ========================================================================== */
+.pbi-subnav-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(15, 23, 42, 0.85);
+  padding: 0.45rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-subtle);
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.pbi-subtab-btn {
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--text-muted);
+  font-family: var(--font-main);
+  font-size: 0.85rem;
+  font-weight: 500;
+  padding: 0.55rem 1.15rem;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  transition: all var(--transition-fast);
+}
+
+.pbi-subtab-btn:hover {
+  color: var(--text-main);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.pbi-subtab-btn.active {
+  color: #fff;
+  background: linear-gradient(135deg, rgba(2, 132, 199, 0.85), rgba(3, 105, 161, 0.9));
+  border-color: rgba(56, 189, 248, 0.5);
+  box-shadow: 0 2px 12px rgba(2, 132, 199, 0.4);
+  font-weight: 600;
+}
+
+.pbi-subpage {
+  display: none;
+  animation: fadeIn 0.25s ease forwards;
+}
+
+.pbi-subpage.active {
+  display: block;
+}
+
+/* Descartes Horizontal Chart (Matching Streamlit & Power BI Desktop) */
+.descartes-chart-box {
+  background: rgba(18, 24, 38, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-md);
+  padding: 1.5rem 1.75rem;
+  margin-top: 1.25rem;
+}
+
+.descartes-chart-header {
+  font-size: 0.98rem;
+  font-weight: 600;
+  color: #f1f5f9;
+  margin-bottom: 1.25rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.descartes-chart-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.descartes-bar-row {
+  display: grid;
+  grid-template-columns: 290px 1fr 40px;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+@media (max-width: 820px) {
+  .descartes-bar-row {
+    grid-template-columns: 1fr;
+    gap: 0.35rem;
+  }
+}
+
+.descartes-bar-label {
+  font-size: 0.84rem;
+  color: #cbd5e1;
+  text-align: right;
+  font-family: var(--font-code);
+}
+
+@media (max-width: 820px) {
+  .descartes-bar-label {
+    text-align: left;
+  }
+}
+
+.descartes-bar-track {
+  background: rgba(255, 255, 255, 0.04);
+  height: 32px;
+  border-radius: 6px;
+  overflow: hidden;
+  position: relative;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  display: flex;
+  align-items: center;
+}
+
+.descartes-bar-fill {
+  height: 100%;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 10px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #fff;
+  transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.descartes-bar-count {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #f8fafc;
+  text-align: right;
+}
+
+/* X-Axis Scale */
+.descartes-axis-ticks {
+  display: flex;
+  justify-content: space-between;
+  margin-left: 290px;
+  margin-right: 40px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  font-size: 0.72rem;
+  color: var(--text-dim);
+}
+
+@media (max-width: 820px) {
+  .descartes-axis-ticks {
+    margin-left: 0;
+    margin-right: 0;
+  }
+}
+
+.descartes-axis-title {
+  text-align: center;
+  font-size: 0.78rem;
+  color: var(--text-dim);
+  margin-top: 8px;
+}
+
+/* Collapsible Accordion */
+.pbi-accordion {
+  background: rgba(18, 24, 38, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-md);
+  margin-top: 1.5rem;
+  overflow: hidden;
+}
+
+.pbi-accordion summary {
+  padding: 0.95rem 1.25rem;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #e2e8f0;
+  cursor: pointer;
+  user-select: none;
+  background: rgba(255, 255, 255, 0.02);
+  transition: background var(--transition-fast);
+}
+
+.pbi-accordion summary:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: #fff;
+}
+
+.pbi-accordion-content {
+  padding: 1rem 1.25rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  overflow-x: auto;
+}
+
+/* Streamlit Live Embed Frame */
+.streamlit-embed-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
+}
+
+.streamlit-embed-header {
+  padding: 0.9rem 1.4rem;
+  background: rgba(15, 23, 42, 0.95);
+  border-bottom: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.85rem;
+}
+
+.streamlit-iframe-wrapper {
+  width: 100%;
+  height: 850px;
+  background: #0e1117;
+  position: relative;
+}
+
+.streamlit-iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  display: block;
+}
+
+
